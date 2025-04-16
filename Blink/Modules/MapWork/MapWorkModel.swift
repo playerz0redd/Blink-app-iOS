@@ -29,7 +29,7 @@ class MapWorkModel {
     func getPeopleVisited(name: String, method: MapService.ServerMethod) async throws -> Int {
         let data = try await mapNetworkService.getPeopleVisitedAmount(friendName: name, method: method)
         if let amount = try? JSONDecoder().decode(ApiPeopleAmount.self, from: data) {
-            return amount.people_visited
+            return amount.peopleVisitedAmount
         }
         return 0
     }

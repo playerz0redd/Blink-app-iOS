@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+class MainViewModel : ObservableObject {
+    @Published var isLogedIn: Bool = false
+    
+    private let storageService = StorageService()
+    
+    func checkLogedIn() {
+        self.isLogedIn = storageService.getToken() != nil
+    }
+    
+    
+}

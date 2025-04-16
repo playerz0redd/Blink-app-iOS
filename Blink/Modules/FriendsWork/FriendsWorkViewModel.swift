@@ -7,12 +7,6 @@
 
 import Foundation
 
-enum FriendStatus {
-    case friend
-    case request
-    case block
-}
-
 class FriendsViewModel : ObservableObject {
     
     private let model = FriendsWorkModel()
@@ -21,14 +15,20 @@ class FriendsViewModel : ObservableObject {
     @Published var friendStatus: FriendsInfoSend.Status = .friend
     @Published var friendsInfoArray: [PeopleInfoResult] = []
     
-        func sendFriendRequest() async throws {
-            try await model.sendFriendRequest(name: self.requestName)
-        }
+    func sendFriendRequest() async throws {
+        try await model.sendFriendRequest(name: self.requestName)
+    }
     
-        func getPeopleList() async throws {
-            let undecodedData = try await model.getPeopleByStatusList(status: self.friendStatus)
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            self.friendsInfoArray = try decoder.decode([PeopleInfoResult].self, from: undecodedData)
-        }
+    func getPeopleList() async throws {
+        let undecodedData = try await model.getPeopleByStatusList(status: self.friendStatus)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        self.friendsInfoArray = try decoder.decode([PeopleInfoResult].self, from: undecodedData)
+    }
+    
+    enum FriendStatus {
+        case friend
+        case request
+        case block
+    }
 }

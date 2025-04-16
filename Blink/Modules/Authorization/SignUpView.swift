@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @Binding var isLoged : Bool
     @StateObject var viewModel = ViewModel()
     var body: some View {
         Image("sign-up-image")
@@ -39,7 +40,7 @@ struct SignUpView: View {
                     
                     Button {
                         Task {
-                            try await viewModel.login()
+                            isLoged = try await viewModel.authefication(isLoged: isLoged, activity: .authorization)
                         }
                     } label: {
                         Text("Войти")
@@ -55,7 +56,7 @@ struct SignUpView: View {
                     
                     Button {
                         Task {
-                            try await viewModel.registration()
+                            isLoged = try await viewModel.authefication(isLoged: isLoged, activity: .registration)
                         }
                     } label: {
                         Text("Зарегистроваться")
@@ -76,6 +77,3 @@ struct SignUpView: View {
     }
 }
 
-#Preview {
-    SignUpView()
-}

@@ -23,6 +23,10 @@ struct MyLocationUpdate : Codable {
 }
 
 struct ApiPeopleAmount : Codable {
-    var people_visited : Int
+    var peopleVisitedAmount: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case peopleVisitedAmount = "people_visited"
+    }
 }
 

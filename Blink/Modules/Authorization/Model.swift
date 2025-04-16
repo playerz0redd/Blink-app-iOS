@@ -10,7 +10,7 @@ import Foundation
 
 class Model {
     
-    var networkManager = NetworkManager()
+    var networkManager = NetworkManager2()
     var storageService = StorageService()
     
     var username : String = ""
@@ -20,24 +20,39 @@ class Model {
         return storageService.getToken()
     }
     
-    func userRegister() async throws -> String {
-        let token = try await networkManager.userAuthorization(
-            authorizationType: .registration,
-            username: username,
-            password: password
+    func userAuth(activity: ViewModel.Activity) async throws -> String {
+        var tokenData = try await networkManager.sendRequest(
+            url: activity == .authorization ? ApiURL.login.rawValue : ApiURL.registration.rawValue,
+            method: .post,
+            requestData: UserDataOut(username: username, password: password)
         )
+        let token: String? = try Response.parse(from: tokenData!)
         
-        storageService.saveUserInfo(token: token, username: username, password: password)
-        return token
+        if let token = token {
+            storageService.saveUserInfo(token: token, username: username, password: password)
+            return token
+        }
+        return ""
     }
     
-    func userLogin() async throws -> String {
-        let token = try await networkManager.userAuthorization(authorizationType: .login,
-                                                          username: username,
-                                                          password: password)
-        
-        storageService.saveUserInfo(token: token, username: username, password: password)
-        return token
-    }
+//    func userRegister() async throws -> String {
+//        let token = try await networkManager.userAuthorization(
+//            authorizationType: .registration,
+//            username: username,
+//            password: password
+//        )
+//        
+//        storageService.saveUserInfo(token: token, username: username, password: password)
+//        return token
+//    }
+//    
+//    func userLogin() async throws -> String {
+//        let token = try await networkManager.userAuthorization(authorizationType: .login,
+//                                                          username: username,
+//                                                          password: password)
+//        
+//        storageService.saveUserInfo(token: token, username: username, password: password)
+//        return token
+//    }
     
 }

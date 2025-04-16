@@ -32,6 +32,7 @@ class MapViewModel : ObservableObject {
         center: CLLocationCoordinate2D(latitude: 53.9, longitude: 27.5667),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
+    @Published var showBackground = false
     @Published var place : String = ""
     
     private var lastRequestDate: Date = Date.now

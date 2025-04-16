@@ -27,4 +27,10 @@ class StorageService {
     func getPassword() -> String? {
         return storage.string(forKey: "password")
     }
+    
+    func deleteUser() {
+        storage.removeObject(forKey: "username")
+        storage.removeObject(forKey: "password")
+        storage.removeObject(forKey: "token")
+    }
 }

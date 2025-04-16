@@ -8,8 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var viewModel = MainViewModel()
+    var storageService = StorageService()
     var body: some View {
-        MapView()
+        VStack {
+            if viewModel.isLogedIn {
+                MapView()
+            } else {
+                SignUpView(isLoged: $viewModel.isLogedIn)
+            }
+        }
+        .onAppear {
+            storageService.deleteUser()
+            
+            viewModel.checkLogedIn()
+        }
     }
 }
 

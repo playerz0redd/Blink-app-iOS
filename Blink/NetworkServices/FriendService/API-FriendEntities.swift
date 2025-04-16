@@ -23,7 +23,13 @@ struct FriendsInfoSend : Codable {
 }
 
 struct PeopleInfoResult : Codable {
-    var user_name_from: String
-    var user_name_to: String
+    var usernameFrom: String
+    var usernameTo: String
     var time: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case usernameFrom = "user_name_from"
+        case usernameTo = "user_name_to"
+        case time
+    }
 }

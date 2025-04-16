@@ -16,14 +16,7 @@ class ViewModel : ObservableObject {
     
     var model = Model()
     
-    func registration() async throws {
-        model.username = username
-        model.password = password
-
-        self.token = try await model.userRegister()
-    }
-    
-    func login() async throws {
+    func authefication(isLoged : Bool, activity: Activity) async throws -> Bool {
         isLoading = true
         defer {
             isLoading = false
@@ -31,7 +24,17 @@ class ViewModel : ObservableObject {
         model.username = username
         model.password = password
         
-        self.token = try await model.userLogin()
+        do {
+            self.token = try await model.userAuth(activity: activity)
+        } catch let error as ApiError {
+            print(error.returnErrorMessage())
+        }
+        return self.token == "" ? false : true
+    }
+    
+    enum Activity {
+        case authorization
+        case registration
     }
     
 }

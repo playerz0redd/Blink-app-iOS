@@ -10,7 +10,9 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    
     @StateObject var viewModel: MapViewModel = .init()
+    
     var body: some View {
         Map(coordinateRegion: $viewModel.region,
             interactionModes: [.all],
@@ -19,21 +21,33 @@ struct MapView: View {
         ) { friend in
             MapAnnotation(coordinate: friend.location) {
                 Image(systemName: "person.circle")
-                    .font(.largeTitle)
+                    .font(.system(size: 40))
                     .foregroundStyle(.yellow)
                     .onTapGesture {
                         viewModel.selectFriend(friend)
+                        withAnimation {
+                            viewModel.region = .init(center: friend.location, span: .init(latitudeDelta: 0.03, longitudeDelta: 0.03))
+                        }
                         Task {
                             try await viewModel.getPostPeopleAmount()
                             await viewModel.getRegion()
                             viewModel.isShowingSheet.toggle()
+                            withAnimation {
+                                viewModel.showBackground.toggle()
+                            }
                         }
                     }
             }
         }
         .ignoresSafeArea(.all)
         .mapStyle(.standard)
-        .sheet(isPresented: $viewModel.isShowingSheet) {
+        .sheet(isPresented: $viewModel.isShowingSheet, onDismiss: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation {
+                    viewModel.showBackground = false
+                }
+            }
+        }) {
             PersonSheet(selectedFriend: viewModel.selectedFriend!, viewModel: viewModel)
         }
         .onAppear {
@@ -42,25 +56,31 @@ struct MapView: View {
             }
         }
         .overlay(alignment: .topLeading) {
-            VStack {
-                Text("\(viewModel.place)")
-                    .bold()
-                    .font(.system(size: 29))
-                    .padding(.leading, 20)
-                    .padding(.top, 25)
-                    .underline()
-                    .onReceive(viewModel.$region) { newRegion in
-                        Task {
-                            await viewModel.getPlace()
+            ZStack(alignment: .topLeading) {
+                VStack {
+                    Text("\(viewModel.place)")
+                        .bold()
+                        .frame(alignment: .topLeading)
+                        .font(.system(size: 29))
+                        .padding(.leading, 20)
+                        .padding(.top, 25)
+                        .underline()
+                        .onReceive(viewModel.$region) { newRegion in
+                            Task {
+                                await viewModel.getPlace()
+                            }
                         }
-                    }
+                }
+                if viewModel.showBackground {
+                    LinearGradient(colors: [.pink, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .opacity(0.5)
+                        .ignoresSafeArea(.all)
+                        .transition(.opacity)
+                }
             }
         }
     }
 }
-
-// TODO: amount of people visited profile
-
 
 struct PersonSheet: View {
     var selectedFriend: UserLocation
@@ -71,9 +91,8 @@ struct PersonSheet: View {
                 Circles()
                     .frame(alignment: .topLeading)
                     .offset(x: -150, y: -350)
-                
-                    userInfo(friend: selectedFriend)
                     
+                userInfo(friend: selectedFriend)
 
             }.overlay {
                 VStack {
