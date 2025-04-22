@@ -15,7 +15,10 @@ struct Response<ReturnType : Codable> : Decodable {
     static func parse(from data: Data) throws(ApiError) -> ReturnType? {
         
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        decoder.dateDecodingStrategy = .formatted(formatter)
         
         do {
             let convertedData = try decoder.decode(Response.self, from: data)
@@ -33,4 +36,5 @@ struct Response<ReturnType : Codable> : Decodable {
         }
         return nil
     }
+    
 }

@@ -29,7 +29,7 @@ struct MapView: View {
                             viewModel.region = .init(center: friend.location, span: .init(latitudeDelta: 0.03, longitudeDelta: 0.03))
                         }
                         Task {
-                            try await viewModel.getPostPeopleAmount()
+                            try await viewModel.getPeopleAmount()
                             await viewModel.getRegion()
                             viewModel.isShowingSheet.toggle()
                             withAnimation {
@@ -40,6 +40,28 @@ struct MapView: View {
             }
         }
         .ignoresSafeArea(.all)
+        .onAppear {
+            Task {
+                await viewModel.getPlace()
+                try await viewModel.getFriendsLocation()
+                try await viewModel.connectLocationSocket()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                withAnimation(.bouncy(duration: 0.6), {
+                    viewModel.showBackground = false
+                })
+            }
+            do {
+                try viewModel.locationManager.checkLocationServicesIsEnabled()
+            } catch {
+                print("+++")
+            }
+        }
+        .mapControls({
+            MapUserLocationButton()
+            MapPitchToggle()
+            MapScaleView()
+        })
         .mapStyle(.standard)
         .sheet(isPresented: $viewModel.isShowingSheet, onDismiss: {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -49,11 +71,6 @@ struct MapView: View {
             }
         }) {
             PersonSheet(selectedFriend: viewModel.selectedFriend!, viewModel: viewModel)
-        }
-        .onAppear {
-            Task {
-                try await viewModel.getFriendsLocation()
-            }
         }
         .overlay(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
@@ -71,12 +88,22 @@ struct MapView: View {
                             }
                         }
                 }
-                if viewModel.showBackground {
-                    LinearGradient(colors: [.pink, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
-                        .opacity(0.5)
-                        .ignoresSafeArea(.all)
-                        .transition(.opacity)
-                }
+            }
+        }
+        .overlay(alignment: .bottom, content: {
+            Button {
+                print("asd")
+            } label: {
+                Text("button")
+            }
+
+        })
+        .overlay {
+            if viewModel.showBackground {
+                LinearGradient(colors: [.pink, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .opacity(0.5)
+                    .ignoresSafeArea(.all)
+                    .transition(.opacity)
             }
         }
     }
@@ -213,6 +240,7 @@ struct PersonSheet: View {
 
 
 struct Circles: View {
+    @State private var animate = false
     var body: some View {
         ZStack {
             Circle()
@@ -220,24 +248,31 @@ struct Circles: View {
                 .fill(Color .pink)
                 .frame(width: 200, height: 200)
                 .blur(radius: 40)
+                .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: animate)
             
             Circle()
                 .stroke(Color.blue, lineWidth: 60)
                 .frame(width: 280, height: 280)
                 .blur(radius: 60)
+                .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: animate)
             
             Circle()
                 .stroke(Color.red, lineWidth: 80)
-                .frame(width: 360, height: 360)
+                .frame(width: animate ? 360 : 600, height: animate ? 360 : 600)
                 .blur(radius: 60)
-                .offset(x: 30, y: 20)
+                .offset(x: animate ? 30 : 0, y: animate ? 20 : -10)
+                .animation(.easeInOut(duration: 3).repeatForever(autoreverses: true), value: animate)
         
             
             Circle()
-                .stroke(Color.yellow, lineWidth: 130)
+                .stroke(animate ? Color.orange : Color.yellow, lineWidth: 130)
                 .frame(width: 500, height: 500)
                 .blur(radius: 60)
-                .offset(x: 100, y: 70)
+                .offset(x: animate ? 100 : 60, y: animate ? 200 : 20)
+                .animation(.easeInOut(duration: 5).repeatForever(autoreverses: true), value: animate)
+        }
+        .onAppear() {
+            animate = true
         }
     }
 }

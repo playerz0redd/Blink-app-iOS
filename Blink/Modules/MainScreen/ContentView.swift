@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var viewModel = MainViewModel()
     var storageService = StorageService()
+    let friendViewModel = FriendsViewModel()
     var body: some View {
         VStack {
             if viewModel.isLogedIn {
@@ -19,8 +20,11 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            storageService.deleteUser()
-            
+            //storageService.deleteUser()
+            Task {
+                try await friendViewModel.findPeopleByUsername(username: "Login")
+            }
+            print(friendViewModel.$peopleSearch)
             viewModel.checkLogedIn()
         }
     }

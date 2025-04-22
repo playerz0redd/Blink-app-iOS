@@ -24,6 +24,8 @@ extension ApiError {
                     return "Пользователь существует"
                 case .unknown, .none:
                     return "Неизвестная ошибка сервера"
+                case .some(.socketError):
+                    return "Неизвестная ошибка сервера"
                 }
                 
             case .appError(let appError):
@@ -34,6 +36,10 @@ extension ApiError {
                     return "Системная ошибка: \(sysError.localizedDescription)"
                 case .noInternetConnection:
                     return "Нет соединения с интернетом"
+                case .locationIsNotAllowed:
+                    return "Нет прав для работы с вашей геолокацией"
+                case .encoderError:
+                    return "Неизвестная ошибка сервера"
                 }
             }
     }

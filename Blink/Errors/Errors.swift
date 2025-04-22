@@ -19,6 +19,7 @@ enum ApiError: Error {
             case requestError = 403
             case friendshipNotFound = 402
             case friendNotFound = 401
+            case socketError = 400
             case unknown = -1
         }
         
@@ -36,6 +37,8 @@ enum ApiError: Error {
         case invalidUrl(Error)
         case systemError(Error)
         case noInternetConnection
+        case locationIsNotAllowed
+        case encoderError
     }
     
     case serverError(ServerError)

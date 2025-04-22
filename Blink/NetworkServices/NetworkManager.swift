@@ -9,12 +9,15 @@ import Foundation
 
 class NetworkManager2 {
     
+    private var webSocketTask: URLSessionWebSocketTask?
+    private var dispatchTimer: DispatchSourceTimer?
+    
     enum RequestMethod : String {
         case get = "GET"
         case post = "POST"
     }
     
-    private let serverIP = "http://127.0.0.1:8000"
+    private let serverIP = "192.168.1.100:8000"//"192.168.1.102:8000"//"http://192.168.1.108:8000"
     
     func sendRequest<ApiData: Codable>(
         url: String,
@@ -22,13 +25,13 @@ class NetworkManager2 {
         requestData: ApiData?) async throws(ApiError) -> Data? {
             
             // config url with call
-            let url = URL(string: serverIP + url)!
-            
-            let jsonData = try? JSONEncoder().encode(requestData)
+            let url = URL(string: "http://" + serverIP + url)!
         
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
-            request.httpBody = jsonData
+            if method == .post {
+                request.httpBody = try? JSONEncoder().encode(requestData)
+            }
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
             var (data, response) : (Data?, URLResponse?) = (nil, nil)
@@ -47,4 +50,71 @@ class NetworkManager2 {
             
             return data
     }
+    
+    struct EmptyRequest: Codable {
+        
+    }
+    
+    func sendDataSocket<ApiData: Codable>(data: ApiData) async throws(ApiError) {
+        if let socket = webSocketTask {
+            var message : URLSessionWebSocketTask.Message?
+            do {
+                let jsonData = try JSONEncoder().encode(data)
+                message = URLSessionWebSocketTask.Message.string(String(data: jsonData, encoding: .utf8) ?? "")
+            } catch {
+                throw .appError(.encoderError)
+            }
+            do {
+                try await socket.send(message!)
+            } catch {
+                throw .serverError(.init(error: .socketError))
+            }
+        }
+    }
+    
+    func connect(token: String, to domain: ApiURL) async throws {
+        guard webSocketTask == nil else { return }
+        let url = URL(string: "ws://\(serverIP)" + domain.rawValue + "\(token)")
+        webSocketTask = URLSession.shared.webSocketTask(with: url!)
+        webSocketTask?.resume()
+        pingServer()
+        while true {
+            try await receiveMessages()
+        }
+    }
+    
+    private func pingServer() {
+        dispatchTimer = DispatchSource.makeTimerSource(queue: DispatchQueue.global())
+        if let timer = dispatchTimer {
+            timer.schedule(deadline: .now() + 10, repeating: .seconds(10))
+            timer.setEventHandler { [weak self] in
+                print("timer")
+                self?.webSocketTask?.sendPing(pongReceiveHandler: { error in
+                    print(error?.localizedDescription)
+                })
+            }
+            timer.resume()
+        }
+    }
+    
+    private func receiveMessages() async throws {
+        do {
+            let message = try await webSocketTask?.receive()
+            switch message {
+            case .string(let text):
+                print("Received string: \(text)")
+            case .data(let data):
+                print("Received data: \(data)")
+            case .none:
+                print("none")
+            @unknown default:
+                print("Received unknown message")
+            }
+        } catch {
+            print("Receive error: \(error.localizedDescription)")
+        }
+    }
+
+    
+    
 }

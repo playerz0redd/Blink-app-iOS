@@ -14,6 +14,7 @@ class FriendsViewModel : ObservableObject {
     @Published var requestName: String = ""
     @Published var friendStatus: FriendsInfoSend.Status = .friend
     @Published var friendsInfoArray: [PeopleInfoResult] = []
+    @Published var peopleSearch : [SearchPerson]?
     
     func sendFriendRequest() async throws {
         try await model.sendFriendRequest(name: self.requestName)
@@ -24,6 +25,10 @@ class FriendsViewModel : ObservableObject {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         self.friendsInfoArray = try decoder.decode([PeopleInfoResult].self, from: undecodedData)
+    }
+    
+    func findPeopleByUsername(username: String) async throws {
+        self.peopleSearch = try await model.findPeopleByUsername(username: username)
     }
     
     enum FriendStatus {

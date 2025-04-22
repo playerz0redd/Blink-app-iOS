@@ -27,36 +27,29 @@ class MapViewModel : ObservableObject {
     @Published var peopleVisited : Int = 0
     @Published var selectedFriend : UserLocation? = nil
     @Published var address : String = ""
-    @Published var myLocation: CLLocationCoordinate2D?
-    @Published var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 53.9, longitude: 27.5667),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-    )
-    @Published var showBackground = false
+    @Published var region = MKCoordinateRegion(center: .init(), span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05))
+    @Published var showBackground = true
     @Published var place : String = ""
     
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
     
     private var model = MapWorkModel()
+    var locationManager = LocationManager()
+    private var cancellables = Set<AnyCancellable>()
     
-    func selectFriend(_ friend: UserLocation) {
-        self.selectedFriend = friend
+    init() {
+        Task {
+            try? await updateMyLocation()
+        }
     }
     
-    @MainActor
-    func getFriendsLocation() async throws {
-        let undecodedData = try await model.getFriendsLocation()
+    @MainActor func getFriendsLocation() async throws {
+        let locationArray = try await model.getFriendsLocation()
+        guard let locations = locationArray else { return }
         
-        let decoder = JSONDecoder()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        decoder.dateDecodingStrategy = .formatted(formatter)
-        
-        let locationArray = try decoder.decode([Location].self, from: undecodedData)
         var array : [UserLocation] = []
-        for item in locationArray {
+        for item in locations {
             array.append(UserLocation(username: item.friend_name,
                                       friendsSince: item.friends_since,
                                       friendAmount: item.friend_amount,
@@ -69,20 +62,29 @@ class MapViewModel : ObservableObject {
         Calendar.current.dateComponents([.day], from: from, to: to).day ?? 0
     }
     
-    private func updateMyLocation() async throws {
-        // location data from other manager
+    @MainActor func updateMyLocation() async throws {
+        if abs(region.center.latitude) < 0.01 && abs(region.center.longitude) < 0.01 {
+            region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: locationManager.location?.latitude ?? 0, longitude: locationManager.location?.longitude ?? 0),
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                )
+        }
         
-        // or with location update call this method
-        try await model.updateMyLocation(latitude: self.myLocation?.latitude ?? 0, longitude: self.myLocation?.longitude ?? 0)
+        locationManager.$location
+            .compactMap({ $0 })
+            .throttle(for: .seconds(5), scheduler: RunLoop.main, latest: true)
+            .sink { [weak self] newLocation in
+            Task {
+                try await self?.model.updateMyLocation(latitude: newLocation.latitude, longitude: newLocation.longitude)
+            }
+        }.store(in: &cancellables)
     }
     
-    @MainActor
-    func getPostPeopleAmount() async throws {
+    @MainActor func getPeopleAmount() async throws {
         self.peopleVisited = try await model.getPeopleVisited(name: self.selectedFriend?.username ?? "", method: .post)
     }
     
-    @MainActor
-    func getRegion() async {
+    @MainActor func getRegion() async {
         guard let location = self.selectedFriend?.location else {
             self.address = ""
             return
@@ -95,7 +97,6 @@ class MapViewModel : ObservableObject {
     @MainActor func getPlace() async {
         guard Date.now.timeIntervalSince(self.lastRequestDate) > timeInterval else { return }
         self.lastRequestDate = Date.now
-        
         let region = CLLocation(latitude: self.region.center.latitude, longitude: self.region.center.longitude)
         
         switch self.region.span.latitudeDelta {
@@ -105,6 +106,14 @@ class MapViewModel : ObservableObject {
         case 5..<30: self.place = await (try? region.getCountry()) ?? ""
         default: self.place = "earth"
         }
+    }
+    
+    func selectFriend(_ friend: UserLocation) {
+        self.selectedFriend = friend
+    }
+    
+    func connectLocationSocket() async throws {
+        try await model.connectLocationSocket(to: ApiURL.locationSocket)
     }
     
 }

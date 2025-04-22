@@ -9,9 +9,9 @@ import SwiftUI
 
 struct SignUpView: View {
     @Binding var isLoged : Bool
-    @StateObject var viewModel = ViewModel()
+    @StateObject var viewModel = AuthViewModel()
     var body: some View {
-        Image("sign-up-image")
+        Image("log-in-image")
             .resizable()
             .ignoresSafeArea(.all)
             .scaledToFill()
@@ -28,15 +28,15 @@ struct SignUpView: View {
                         .frame(width: 300, height: 50)
                         .background(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8))
                             .stroke(Color.gray, lineWidth: 1)
-                            .fill(.indigo)
-                            .opacity(0.94))
+                            .fill(.pink)
+                            .opacity(0.7))
 
                     SecureField("  Ваш пароль", text: $viewModel.password)
                         .frame(width: 300, height: 50)
                         .background(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8))
                             .stroke(Color.gray, lineWidth: 1)
-                            .fill(.indigo)
-                            .opacity(0.94))
+                            .fill(.pink)
+                            .opacity(0.7))
                     
                     Button {
                         Task {

@@ -8,13 +8,13 @@
 import Foundation
 
 @MainActor
-class ViewModel : ObservableObject {
+class AuthViewModel : ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var token: String = ""
     @Published var isLoading = false
     
-    var model = Model()
+    var model = AuthModel()
     
     func authefication(isLoged : Bool, activity: Activity) async throws -> Bool {
         isLoading = true
