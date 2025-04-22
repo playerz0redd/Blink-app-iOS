@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 
 
@@ -25,12 +26,17 @@ class SocketMessage: Codable {
     init() {
         self.type = nil
     }
+    
+    required init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.type = try container.decodeIfPresent(SocketMessage.MessageType.self, forKey: .type)
+    }
 }
 
 class SocketLocationUpdateSend: SocketMessage {
     let token: String?
-    let latitude: Double
-    let longitude: Double
+    var latitude: Double
+    var longitude: Double
     
     init(type: SocketMessage.MessageType, token: String, latitude: Double, longtitude: Double) {
         self.latitude = latitude
@@ -73,25 +79,40 @@ class SocketLocationUpdateSend: SocketMessage {
 
 
 class LocationUpdateGet: SocketLocationUpdateSend {
-    let username: String
-    let id: Int
     
-    init(username: String, id: Int, latitude: Double, longitude: Double) {
+    let username: String
+    
+    init(username: String, latitude: Double, longitude: Double) {
         self.username = username
-        self.id = id
         super.init(latitude: latitude, longtitude: longitude)
     }
     
     enum CodingKeys: String, CodingKey {
         case username
-        case id
         case latitude
-        case longtitude
+        case longitude
     }
     
     required init(from decoder: Decoder) throws {
-        fatalError("init(from:) has not been implemented")
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        username = try container.decode(String.self, forKey: .username)
+        let latitude = try container.decode(Double.self, forKey: .latitude)
+        let longitude = try container.decode(Double.self, forKey: .longitude)
+        super.init(latitude: latitude, longtitude: longitude)
     }
     
-    
+    override func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(username, forKey: .username)
+        try container.encode(latitude, forKey: .latitude)
+        try container.encode(longitude, forKey: .longitude)
+    }
+}
+
+struct UserLocation: Identifiable {
+    var id = UUID()
+    var username : String
+    var friendsSince: Date
+    var friendAmount : Int
+    var location: CLLocationCoordinate2D
 }

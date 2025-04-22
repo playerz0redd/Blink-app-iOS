@@ -9,15 +9,6 @@ import Foundation
 import MapKit
 import Combine
 
-struct UserLocation: Identifiable {
-    var id = UUID()
-    var username : String
-    var friendsSince: Date
-    var friendAmount : Int
-    var location: CLLocationCoordinate2D
-}
-
-
 class MapViewModel : ObservableObject {
     @Published var friendsInfoArray : [PeopleInfoResult] = []
     @Published var isShowingSheet : Bool = false
@@ -34,7 +25,7 @@ class MapViewModel : ObservableObject {
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
     
-    private var model = MapWorkModel()
+    private var model = MapWorkModel(networkManager: NetworkManager2())
     var locationManager = LocationManager()
     private var cancellables = Set<AnyCancellable>()
     
@@ -81,7 +72,7 @@ class MapViewModel : ObservableObject {
     }
     
     @MainActor func getPeopleAmount() async throws {
-        self.peopleVisited = try await model.getPeopleVisited(name: self.selectedFriend?.username ?? "", method: .post)
+        self.peopleVisited = try await model.getPeopleVisited(name: self.selectedFriend?.username ?? "", method: .get)
     }
     
     @MainActor func getRegion() async {

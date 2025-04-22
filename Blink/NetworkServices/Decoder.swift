@@ -8,12 +8,11 @@
 import Foundation
 
 
-struct Response<ReturnType : Codable> : Decodable {
+struct Response<ReturnType : Decodable> : Decodable {
     let data: ReturnType?
     let error: ApiError.ServerError?
     
     static func parse(from data: Data) throws(ApiError) -> ReturnType? {
-        
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"

@@ -7,10 +7,20 @@
 
 import Foundation
 
+
+//MARK: - Delegate protocol
+
+protocol WebSocketDelegate: AnyObject {
+    func didReceiveText(text: String) throws(ApiError) -> SocketMessage?
+}
+
+//MARK: - Class
+
 class NetworkManager2 {
     
     private var webSocketTask: URLSessionWebSocketTask?
     private var dispatchTimer: DispatchSourceTimer?
+    weak var receiveDelegate: WebSocketDelegate?
     
     enum RequestMethod : String {
         case get = "GET"
@@ -55,7 +65,7 @@ class NetworkManager2 {
         
     }
     
-    func sendDataSocket<ApiData: Codable>(data: ApiData) async throws(ApiError) {
+    func sendDataSocket<ApiData: Encodable>(data: ApiData) async throws(ApiError) {
         if let socket = webSocketTask {
             var message : URLSessionWebSocketTask.Message?
             do {
@@ -79,7 +89,7 @@ class NetworkManager2 {
         webSocketTask?.resume()
         pingServer()
         while true {
-            try await receiveMessages()
+            try await startListening()
         }
     }
     
@@ -97,12 +107,13 @@ class NetworkManager2 {
         }
     }
     
-    private func receiveMessages() async throws {
+    func startListening() async {
         do {
             let message = try await webSocketTask?.receive()
             switch message {
             case .string(let text):
                 print("Received string: \(text)")
+                try receiveDelegate?.didReceiveText(text: text)
             case .data(let data):
                 print("Received data: \(data)")
             case .none:

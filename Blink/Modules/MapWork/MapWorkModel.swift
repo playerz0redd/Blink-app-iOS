@@ -7,10 +7,31 @@
 
 import Foundation
 
-class MapWorkModel {
-    
+class MapWorkModel: WebSocketDelegate {
+
     private let storageService = StorageService()
-    private let networkManager = NetworkManager2()
+    private let networkManager : NetworkManager2
+    
+    func didReceiveText(text: String) throws(ApiError) -> SocketMessage? {
+        if let data = text.data(using: .utf8) {
+            guard let message: SocketMessage = try Response.parse(from: data) else { return nil }
+            
+            if message.type == .locationUpdate {
+                guard let location: LocationUpdateGet = try Response.parse(from: data) else { return nil }
+                print("good")
+                return location
+            }
+        }
+        return nil
+    }
+    
+    init(networkManager: NetworkManager2) {
+        self.networkManager = networkManager
+        self.networkManager.receiveDelegate = self
+        Task {
+            await self.networkManager.startListening()
+        }
+    }
     
     func getFriendsLocation() async throws -> [Location]? {
         if let token = storageService.getToken() {
@@ -31,9 +52,9 @@ class MapWorkModel {
         }
     }
     
-    func getPeopleVisited(name: String, method: MapService.ServerMethod) async throws -> Int {
+    func getPeopleVisited(name: String, method: NetworkManager2.RequestMethod) async throws -> Int {
         let data = try await networkManager.sendRequest(url: ApiURL.peopleVisited.rawValue + name,
-                                                        method: .get,
+                                                        method: method,
                                                         requestData: NetworkManager2.EmptyRequest())
         
         guard let data = data else { return 0 }
