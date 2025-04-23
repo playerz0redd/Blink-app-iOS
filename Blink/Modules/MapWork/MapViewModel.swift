@@ -8,6 +8,7 @@
 import Foundation
 import MapKit
 import Combine
+import SwiftUI
 
 class MapViewModel : ObservableObject {
     @Published var friendsInfoArray : [PeopleInfoResult] = []
@@ -21,17 +22,43 @@ class MapViewModel : ObservableObject {
     @Published var region = MKCoordinateRegion(center: .init(), span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05))
     @Published var showBackground = true
     @Published var place : String = ""
+    @Published var mapStyle = MapStyle.standard
     
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
     
-    private var model = MapWorkModel(networkManager: NetworkManager2())
+    private var model : MapWorkModel///= MapWorkModel(networkManager: NetworkManager2())
     var locationManager = LocationManager()
     private var cancellables = Set<AnyCancellable>()
     
-    init() {
+    
+    init(model: MapWorkModel) {
+        self.model = model
+        print("created")
         Task {
             try? await updateMyLocation()
+            model.$locationUpdate
+                .compactMap { $0 }
+                .sink { [weak self] newLocation in
+                    print("-")
+                    if let self = self,
+                       let index = self.friendsLocation.firstIndex(where: { $0.username == newLocation.username }) {
+                        print("+")
+                        let existingFriend = self.friendsLocation[index]
+                        
+                        self.friendsLocation[index] = UserLocation(
+                            username: newLocation.username,
+                            friendsSince: existingFriend.friendsSince!,
+                            friendAmount: existingFriend.friendAmount!,
+                            location: CLLocationCoordinate2D(
+                                latitude: newLocation.location.latitude,
+                                longitude: newLocation.location.longitude
+                            )
+                        )
+                    }
+                    
+                }
+                .store(in: &cancellables)
         }
     }
     
@@ -107,4 +134,18 @@ class MapViewModel : ObservableObject {
         try await model.connectLocationSocket(to: ApiURL.locationSocket)
     }
     
+    func didUpdateFriendsLocation() async throws(ApiError) {
+ 
+    }
+    
+    private let mapStyles : [MapStyle] = [.standard, .imagery, .hybrid]
+    private var currentIndex = 0
+    
+    func changeMapStyle() {
+        currentIndex += 1
+        currentIndex %= self.mapStyles.count
+        self.mapStyle = self.mapStyles[currentIndex]
+    }
+    
 }
+

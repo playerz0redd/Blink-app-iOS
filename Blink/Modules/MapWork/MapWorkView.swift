@@ -11,7 +11,7 @@ import MapKit
 
 struct MapView: View {
     
-    @StateObject var viewModel: MapViewModel = .init()
+    @StateObject var viewModel: MapViewModel = .init(model: .init(networkManager: NetworkManager2()))
     
     var body: some View {
         Map(coordinateRegion: $viewModel.region,
@@ -59,10 +59,25 @@ struct MapView: View {
         }
         .mapControls({
             MapUserLocationButton()
-            MapPitchToggle()
-            MapScaleView()
         })
-        .mapStyle(.standard)
+        .overlay(alignment: .topTrailing, content: {
+            Button {
+                viewModel.changeMapStyle()
+            } label: {
+                Image(systemName: "map")
+                    .foregroundStyle(Color.blue)
+                    .font(.system(size: 18))
+                    .background {
+                        RoundedRectangle(cornerRadius: 9)
+                            .frame(width: 42, height: 42)
+                            .foregroundStyle(.white)
+                    }
+            }
+            .padding(.top, 65)
+            .padding(.trailing, 16)
+
+        })
+        .mapStyle(viewModel.mapStyle)
         .sheet(isPresented: $viewModel.isShowingSheet, onDismiss: {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 withAnimation {
@@ -127,7 +142,7 @@ struct PersonSheet: View {
                         .offset(y: -40)
                         .font(.system(size: 18))
                     HStack(spacing: 70) {
-                        friendImages(friendAmount: selectedFriend.friendAmount)
+                        friendImages(friendAmount: selectedFriend.friendAmount!)
                             .offset(x: -50)
                         rectangeView
                     }
@@ -135,10 +150,10 @@ struct PersonSheet: View {
                     heartAnimation
                         .padding(.top, 110)
                     
-                    Text("дружите с \(selectedFriend.friendsSince.getRuDateString()).")
+                    Text("дружите с \(selectedFriend.friendsSince!.getRuDateString()).")
                         .padding(.top, 30)
                         .foregroundStyle(.gray)
-                    Text("\(viewModel.getDistanceBetweenDates(from: selectedFriend.friendsSince, to: Date.now)) дней провели вместе 😉")
+                    Text("\(viewModel.getDistanceBetweenDates(from: selectedFriend.friendsSince!, to: Date.now)) дней провели вместе 😉")
                         .foregroundStyle(.gray)
                     
                 }.padding(.top, 320)

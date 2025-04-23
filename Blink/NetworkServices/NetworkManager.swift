@@ -11,7 +11,7 @@ import Foundation
 //MARK: - Delegate protocol
 
 protocol WebSocketDelegate: AnyObject {
-    func didReceiveText(text: String) throws(ApiError) -> SocketMessage?
+    func didReceiveText(text: String) async throws(ApiError) -> SocketMessage?
 }
 
 //MARK: - Class
@@ -113,7 +113,7 @@ class NetworkManager2 {
             switch message {
             case .string(let text):
                 print("Received string: \(text)")
-                try receiveDelegate?.didReceiveText(text: text)
+                try await receiveDelegate?.didReceiveText(text: text)
             case .data(let data):
                 print("Received data: \(data)")
             case .none:

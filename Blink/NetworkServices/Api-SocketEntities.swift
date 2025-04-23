@@ -34,6 +34,7 @@ class SocketMessage: Codable {
 }
 
 class SocketLocationUpdateSend: SocketMessage {
+    
     let token: String?
     var latitude: Double
     var longitude: Double
@@ -112,7 +113,19 @@ class LocationUpdateGet: SocketLocationUpdateSend {
 struct UserLocation: Identifiable {
     var id = UUID()
     var username : String
-    var friendsSince: Date
-    var friendAmount : Int
+    var friendsSince: Date?
+    var friendAmount : Int?
     var location: CLLocationCoordinate2D
+    
+    init(username: String, location: CLLocationCoordinate2D) {
+        self.username = username
+        self.location = location
+    }
+    
+    init(username: String, friendsSince: Date, friendAmount: Int, location: CLLocationCoordinate2D) {
+        self.friendsSince = friendsSince
+        self.friendAmount = friendAmount
+        self.username = username
+        self.location = location
+    }
 }
