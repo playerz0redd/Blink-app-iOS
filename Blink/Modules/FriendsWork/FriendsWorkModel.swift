@@ -12,21 +12,34 @@ class FriendsWorkModel {
     private let mapNetworkService = FriendService()
     private let networkManager = NetworkManager2()
     
-    func sendFriendRequest(name : String) async throws {
+    func sendFriendRequest(to name: String) async throws {
         if let token = storageService.getToken() {
-            try await mapNetworkService.sendRequest(token: token, name: name)
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            
+            try await networkManager.sendRequest(
+                url: ApiURL.friends.rawValue,
+                method: .post,
+                requestData: FriendsInfoSend(
+                    userFromToken: token,
+                    userToName: name,
+                    time: dateFormatter.string(from: Date()),
+                    status: .request)
+            )
         }
     }
 
-    func getPeopleByStatusList(status: FriendsInfoSend.Status) async throws -> Data {
+    func getPeopleByStatusList(status: SearchPerson.Status) async throws -> [SearchPerson] {
         if let token = storageService.getToken() {
-            return try await mapNetworkService.getPeopleList(token: token, status: status)
+            let url = "\(ApiURL.friends.rawValue)\(token)/\(status.rawValue)"
+            if let data = try await networkManager.sendRequest(url: url, method: .get, requestData: NetworkManager2.EmptyRequest()) {
+                return try Response<[SearchPerson]>.parse(from: data) ?? []
+            }
         }
-        return Data()
+        return []
     }
     
     func findPeopleByUsername(username: String) async throws -> [SearchPerson]? {
-        
         guard let token = storageService.getToken() else { return nil }
         
         let url = ApiURL.users.rawValue + username + "/" + token
@@ -36,5 +49,12 @@ class FriendsWorkModel {
         
         return try Response.parse(from: data)
     
+    }
+    
+    func changeStatus(with username: String, status: SearchPerson.Status) async throws(ApiError) {
+        if let token = storageService.getToken() {
+            let url = ApiURL.friends.rawValue + token + "/" + status.rawValue + "/" + username
+            try await networkManager.sendRequest(url: url, method: .put, requestData: NetworkManager2.EmptyRequest())
+        }
     }
 }

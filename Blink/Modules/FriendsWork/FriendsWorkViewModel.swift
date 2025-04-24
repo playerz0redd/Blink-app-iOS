@@ -11,29 +11,56 @@ class FriendsViewModel : ObservableObject {
     
     private let model = FriendsWorkModel()
     
-    @Published var requestName: String = ""
-    @Published var friendStatus: FriendsInfoSend.Status = .friend
-    @Published var friendsInfoArray: [PeopleInfoResult] = []
-    @Published var peopleSearch : [SearchPerson]?
+    @Published var usernameToRequest: String = ""
+    @Published var friendStatus: SearchPerson.Status = .friend
+    @Published var peopleSearch: [SearchPerson] = []
+    @Published var selectedUser: String = ""
     
     func sendFriendRequest() async throws {
-        try await model.sendFriendRequest(name: self.requestName)
+        try await model.sendFriendRequest(to: self.selectedUser)
     }
     
-    func getPeopleList() async throws {
-        let undecodedData = try await model.getPeopleByStatusList(status: self.friendStatus)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        self.friendsInfoArray = try decoder.decode([PeopleInfoResult].self, from: undecodedData)
+    @MainActor func getPeopleList() async throws {
+        self.peopleSearch = try await model.getPeopleByStatusList(status: self.friendStatus)
     }
     
-    func findPeopleByUsername(username: String) async throws {
-        self.peopleSearch = try await model.findPeopleByUsername(username: username)
+    @MainActor func getPeopleList(statusArray: [SearchPerson.Status]) async throws {
+        for status in statusArray {
+            let arr = try await model.getPeopleByStatusList(status: status)
+            self.peopleSearch += arr
+        }
     }
     
-    enum FriendStatus {
-        case friend
-        case request
-        case block
+    @MainActor func findPeopleByUsername(username: String) async throws {
+        if let people = try await model.findPeopleByUsername(username: username) {
+            self.peopleSearch = people
+        } else {
+            self.peopleSearch = []
+        }
     }
+    
+    @MainActor func changeStatus() async throws {
+        try await model.changeStatus(with: self.selectedUser, status: self.friendStatus)
+    }
+    
+    func buttonChangeStatus(newStatus: SearchPerson.Status, with username: String, action: Action) {
+        self.friendStatus = newStatus
+        self.selectedUser = username
+        Task {
+            try await self.changeStatus()
+        }
+        if let index = self.peopleSearch.firstIndex(where: { $0.username == username }) {
+            if action == .updateItem {
+                self.peopleSearch[index] = .init(username: username, status: newStatus)
+            } else {
+                self.peopleSearch.remove(at: index)
+            }
+        }
+    }
+    
+    enum Action {
+        case updateItem
+        case deleteItem
+    }
+
 }

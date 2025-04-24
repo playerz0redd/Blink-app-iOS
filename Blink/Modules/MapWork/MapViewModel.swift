@@ -10,6 +10,8 @@ import MapKit
 import Combine
 import SwiftUI
 
+// MARK: - friends view has viewmodel, viewmodel has init from friends info array, use tabView, backend add recommended request
+
 class MapViewModel : ObservableObject {
     @Published var friendsInfoArray : [PeopleInfoResult] = []
     @Published var isShowingSheet : Bool = false
@@ -23,11 +25,12 @@ class MapViewModel : ObservableObject {
     @Published var showBackground = true
     @Published var place : String = ""
     @Published var mapStyle = MapStyle.standard
+    @Published var isPresentedFriendsSheet: Bool = false
     
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
     
-    private var model : MapWorkModel///= MapWorkModel(networkManager: NetworkManager2())
+    private var model : MapWorkModel
     var locationManager = LocationManager()
     private var cancellables = Set<AnyCancellable>()
     

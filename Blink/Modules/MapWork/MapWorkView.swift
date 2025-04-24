@@ -20,9 +20,7 @@ struct MapView: View {
             annotationItems: viewModel.friendsLocation
         ) { friend in
             MapAnnotation(coordinate: friend.location) {
-                Image(systemName: "person.circle")
-                    .font(.system(size: 40))
-                    .foregroundStyle(.yellow)
+                PersonIconView(nickname: friend.username, size: 40)
                     .onTapGesture {
                         viewModel.selectFriend(friend)
                         withAnimation {
@@ -70,7 +68,7 @@ struct MapView: View {
                     .background {
                         RoundedRectangle(cornerRadius: 9)
                             .frame(width: 42, height: 42)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color("base-color"))
                     }
             }
             .padding(.top, 65)
@@ -86,6 +84,15 @@ struct MapView: View {
             }
         }) {
             PersonSheet(selectedFriend: viewModel.selectedFriend!, viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.isPresentedFriendsSheet , onDismiss: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation {
+                    viewModel.showBackground = false
+                }
+            }
+        }) {
+            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.selectedFriend)
         }
         .overlay(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
@@ -106,12 +113,47 @@ struct MapView: View {
             }
         }
         .overlay(alignment: .bottom, content: {
-            Button {
-                print("asd")
-            } label: {
-                Text("button")
-            }
+            HStack(spacing: 45) {
+                Button {
+                    viewModel.isPresentedFriendsSheet.toggle()
+                    withAnimation {
+                        viewModel.showBackground.toggle()
+                    }
+                } label: {
+                    MapButtonView(
+                        imageName: "person.2.fill",
+                        imageSize: 27,
+                        rectangleWidth: 65,
+                        rectangleHeight: 75
+                    )
+                }
+                
+                Button {
+                    print("friends")
+                } label: {
+                    MapButtonView(
+                        imageName: "bubble.left.and.text.bubble.right.fill",
+                        imageSize: 35,
+                        rectangleWidth: 75,
+                        rectangleHeight: 85
+                    )
+                }
+                // this button is for step records 
+                Button {
+                    print("friends")
+                } label: {
+                    Image("sneaker-image")
+                        .resizable()
+                        .frame(width: 40, height: 40)// 35 for center, 27
+                        .background {
+                            RoundedRectangle(cornerRadius: 20)
+                                .frame(width: 65, height: 75) // 70,85 for center, 60,75
+                                .foregroundStyle(Color("dark"))
+                                .opacity(0.7)
+                        }
+                }
 
+            }.padding(.bottom, 20)
         })
         .overlay {
             if viewModel.showBackground {
@@ -164,9 +206,7 @@ struct PersonSheet: View {
     
     func userInfo(friend: UserLocation) -> some View {
         ZStack {
-            Image("user")
-                .resizable()
-                .frame(width: 120, height: 120)
+            PersonIconView(nickname: friend.username, size: 120, fontSize: 40)
             
             Text("@\(friend.username)")
                 .font(.system(size: 19))

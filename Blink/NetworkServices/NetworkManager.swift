@@ -25,9 +25,10 @@ class NetworkManager2 {
     enum RequestMethod : String {
         case get = "GET"
         case post = "POST"
+        case put = "PUT"
     }
     
-    private let serverIP = "192.168.1.100:8000"//"192.168.1.102:8000"//"http://192.168.1.108:8000"
+    private let serverIP = "192.168.1.110:8000"//"192.168.1.102:8000"//"http://192.168.1.108:8000"
     
     func sendRequest<ApiData: Codable>(
         url: String,

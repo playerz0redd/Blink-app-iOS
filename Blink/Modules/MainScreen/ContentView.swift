@@ -22,7 +22,7 @@ struct ContentView: View {
         .onAppear {
             //storageService.deleteUser()
             Task {
-                try await friendViewModel.findPeopleByUsername(username: "Login")
+                try await friendViewModel.getPeopleList()
             }
             print(friendViewModel.$peopleSearch)
             viewModel.checkLogedIn()
