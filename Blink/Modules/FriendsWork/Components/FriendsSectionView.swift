@@ -86,7 +86,7 @@ struct FriendsSectionView: View {
                             HStack(spacing: 27) {
                                 Text("sent")
                                     .bold()
-                                    .foregroundStyle(LinearGradient(colors: [.purple, .pink], startPoint: .leading, endPoint: .trailing))
+                                    .foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing))
                                 
                                 FriendsActionButton(
                                     leftColor: .purple,
@@ -114,6 +114,7 @@ struct FriendsSectionView: View {
                         
                     }.padding(.horizontal, 15)
                 }
+                
                 if viewModel.peopleSearch == [] {
                     Text("we're not even sure\nwho to recommend...")
                         .font(.title)

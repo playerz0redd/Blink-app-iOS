@@ -43,10 +43,8 @@ class MapViewModel : ObservableObject {
             model.$locationUpdate
                 .compactMap { $0 }
                 .sink { [weak self] newLocation in
-                    print("-")
                     if let self = self,
                        let index = self.friendsLocation.firstIndex(where: { $0.username == newLocation.username }) {
-                        print("+")
                         let existingFriend = self.friendsLocation[index]
                         
                         self.friendsLocation[index] = UserLocation(
@@ -77,10 +75,6 @@ class MapViewModel : ObservableObject {
                                       location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng)))
         }
         self.friendsLocation = array
-    }
-    
-    func getDistanceBetweenDates(from: Date, to: Date) -> Int {
-        Calendar.current.dateComponents([.day], from: from, to: to).day ?? 0
     }
     
     @MainActor func updateMyLocation() async throws {
@@ -135,10 +129,6 @@ class MapViewModel : ObservableObject {
     
     func connectLocationSocket() async throws {
         try await model.connectLocationSocket(to: ApiURL.locationSocket)
-    }
-    
-    func didUpdateFriendsLocation() async throws(ApiError) {
- 
     }
     
     private let mapStyles : [MapStyle] = [.standard, .imagery, .hybrid]

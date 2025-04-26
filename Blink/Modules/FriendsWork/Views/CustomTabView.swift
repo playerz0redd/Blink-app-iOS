@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CustomTabView: View {
     @State private var selectedTab = "FRIENDS"
-    private let tabNames = ["FRIENDS", "REQUESTS"]//, "RECOMMENDED"]
+    private let tabNames = ["FRIENDS", "REQUESTS"]
     @Namespace var animation
     @Binding var isShowingFriendInfoSheet: Bool
     @Binding var selectedUser: UserLocation?
@@ -30,6 +30,7 @@ struct CustomTabView: View {
                         .background {
                             if tabName == selectedTab {
                                 RoundedRectangle(cornerRadius: 12)
+                                    .padding(8)
                                     .frame(height: 50)
                                     .foregroundStyle(Color.gray)
                                     .matchedGeometryEffect(id: "tab", in: animation)
@@ -41,7 +42,7 @@ struct CustomTabView: View {
             }
         }.frame(height: 50)
         .background {
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: 15)
                 .foregroundStyle(Color.black)
         }
         .padding(.horizontal, 10)
@@ -53,8 +54,6 @@ struct CustomTabView: View {
                 FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
             case "REQUESTS":
                 RequestView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
-//            case "RECOMMENDED":
-//                MapView()
             default:
                 MapView()
             }

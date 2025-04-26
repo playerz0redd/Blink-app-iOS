@@ -15,4 +15,10 @@ extension Date {
         dateFormatter.locale = Locale(identifier: "ru_RU")
         return dateFormatter.string(from: self)
     }
+    
+    func getDistanceBetweenDates(to: Date) -> Int {
+        Calendar.current.dateComponents([.day], from: self, to: to).day ?? 0
+    }
+    
+    
 }

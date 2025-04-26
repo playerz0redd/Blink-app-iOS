@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class FriendsViewModel : ObservableObject {
     
@@ -50,10 +51,12 @@ class FriendsViewModel : ObservableObject {
             try await self.changeStatus()
         }
         if let index = self.peopleSearch.firstIndex(where: { $0.username == username }) {
-            if action == .updateItem {
-                self.peopleSearch[index] = .init(username: username, status: newStatus)
-            } else {
-                self.peopleSearch.remove(at: index)
+            withAnimation {
+                if action == .updateItem {
+                    self.peopleSearch[index] = .init(username: username, status: newStatus)
+                } else {
+                    self.peopleSearch.remove(at: index)
+                }
             }
         }
     }

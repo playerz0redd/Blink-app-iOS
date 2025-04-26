@@ -28,6 +28,7 @@ struct FriendsActionButton: View {
                             endPoint: .trailing)
                         )
                 }
+                .transition(.opacity)
         }
 
     }
