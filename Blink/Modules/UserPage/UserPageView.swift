@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct PersonSheet: View {
     @StateObject private var viewModel : UserPageViewModel
     
-    init(username: String) {
-        _viewModel = .init(wrappedValue: .init(username: username))
+    init(
+        dependency: UserPageDependency
+    ) {
+        _viewModel = .init(wrappedValue: .init(
+            dependency: dependency
+        ))
     }
     
     var body: some View {
@@ -24,9 +29,10 @@ struct PersonSheet: View {
             
         }.overlay {
             VStack {
-                Text("📍 \(viewModel.userInfo?.username ?? "")")
+                Text("📍 \(viewModel.region ?? "")")
                     .offset(y: -40)
                     .font(.system(size: 18))
+                showOnMapButton
                 HStack(spacing: 70) {
                     friendImages(friendAmount: viewModel.userInfo?.friendAmount)
                         .offset(x: -50)
@@ -35,30 +41,37 @@ struct PersonSheet: View {
                 
                 heartAnimation
                     .padding(.top, 110)
-                
-                Text("дружите с \(viewModel.userInfo?.friendsSince!.getRuDateString() ?? "").")
-                    .padding(.top, 30)
-                    .foregroundStyle(.gray)
-                Text("\(viewModel.userInfo?.friendsSince!.getDistanceBetweenDates(to: Date.now) ?? 0) дней провели вместе 😉")
-                    .foregroundStyle(.gray)
+                if viewModel.userInfo?.friendsSince != nil {
+                    Text("дружите с \(viewModel.userInfo?.friendsSince!.getRuDateString() ?? "").")
+                        .padding(.top, 30)
+                        .foregroundStyle(.gray)
+                    Text("\(viewModel.userInfo?.friendsSince!.getDistanceBetweenDates(to: Date.now) ?? 0) дней провели вместе 😉")
+                        .foregroundStyle(.gray)
+                } else {
+                    Text("Not friends yet.")
+                }
                 
             }.padding(.top, 320)
         }
         .presentationDetents([.height(750)])
+        .task {
+            await viewModel.launch()
+        }
     }
     
     
     
     func userInfo(username: String?) -> some View {
         ZStack {
-            PersonIconView(nickname: username ?? "1", size: 120, fontSize: 40)
+            PersonIconView(nickname: username ?? "1", size: 120, fontSize: 55)
+            
             
             Text("@\(username ?? "")")
                 .font(.system(size: 19))
                 .bold()
                 .padding(5)
                 .background(RoundedRectangle(cornerSize: CGSize(width: 9, height: 9))
-                    .fill(Color(red: 220/250, green: 220/250, blue: 220/250)))
+                    .fill(Color("base-color")))
                 .rotationEffect(Angle(degrees: -10))
                 .offset(x: 0, y: 60)
         }
@@ -117,7 +130,7 @@ struct PersonSheet: View {
             .overlay {
                 eyeAnimation
                     .offset(x: -10, y: -36)
-                Text("\(viewModel.userInfo?.friendAmount ?? 0)")
+                Text("\(viewModel.userInfo?.peopleVisited ?? 0)")
                     .rotationEffect(.degrees(-9))
                     .bold()
                     .foregroundStyle(Color .white)
@@ -136,6 +149,12 @@ struct PersonSheet: View {
             .symbolEffect(.wiggle.clockwise.byLayer, options: .repeating)
     }
     
+    var showOnMapButton: some View {
+        Button(
+            action: { viewModel.handle(viewAction: .closeAndZoomOnUser) },
+            label: { Text("show on map") }
+        )
+    }
 }
 
 struct Circles: View {

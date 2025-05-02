@@ -16,6 +16,7 @@ class FriendsViewModel : ObservableObject {
     @Published var friendStatus: SearchPerson.Status = .friend
     @Published var peopleSearch: [SearchPerson] = []
     @Published var selectedUser: String = ""
+    @Published var isPresented = false
     
     func sendFriendRequest() async throws {
         try await model.sendFriendRequest(to: self.selectedUser)
@@ -23,13 +24,6 @@ class FriendsViewModel : ObservableObject {
     
     @MainActor func getPeopleList() async throws {
         self.peopleSearch = try await model.getPeopleByStatusList(status: self.friendStatus)
-    }
-    
-    @MainActor func getPeopleList(statusArray: [SearchPerson.Status]) async throws {
-        for status in statusArray {
-            let arr = try await model.getPeopleByStatusList(status: status)
-            self.peopleSearch += arr
-        }
     }
     
     @MainActor func findPeopleByUsername(username: String) async throws {

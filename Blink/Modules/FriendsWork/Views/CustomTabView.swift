@@ -12,7 +12,7 @@ struct CustomTabView: View {
     private let tabNames = ["FRIENDS", "REQUESTS"]
     @Namespace var animation
     @Binding var isShowingFriendInfoSheet: Bool
-    @Binding var selectedUser: UserLocation?
+    @Binding var selectedUser: String//UserLocation?
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tabNames, id: \.self) { tabName in

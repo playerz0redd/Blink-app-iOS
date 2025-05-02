@@ -9,7 +9,6 @@ import Foundation
 import CoreLocation
 
 
-
 class SocketMessage: Codable {
     
     enum MessageType: String, Codable {
@@ -116,16 +115,22 @@ struct UserLocation: Identifiable {
     var friendsSince: Date?
     var friendAmount : Int?
     var location: CLLocationCoordinate2D
+    var peopleVisited: Int?
     
     init(username: String, location: CLLocationCoordinate2D) {
         self.username = username
         self.location = location
     }
     
-    init(username: String, friendsSince: Date, friendAmount: Int, location: CLLocationCoordinate2D) {
+    init(username: String, friendsSince: Date?, friendAmount: Int, location: CLLocationCoordinate2D, peopleVisited: Int) {
         self.friendsSince = friendsSince
         self.friendAmount = friendAmount
+        self.peopleVisited = peopleVisited
         self.username = username
         self.location = location
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case peopleVisited = "people_visited"
     }
 }

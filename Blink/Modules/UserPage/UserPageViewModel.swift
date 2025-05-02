@@ -6,29 +6,61 @@
 //
 
 import Foundation
+import CoreLocation
 
-class UserPageViewModel: ObservableObject {
+enum UserPageTerminationAction {
+    case updateMapTarget(CLLocationCoordinate2D)
+}
+
+enum UserPageViewAction {
+    case closeAndZoomOnUser
+}
+
+struct UserPageDependency {
+    let username: String
+    let onTerminate: (UserPageTerminationAction?) -> Void
+}
+
+final class UserPageViewModel: ObservableObject {
+    
+    private let dependency: UserPageDependency
     private let model = UserPageModel()
+    
     @Published var userInfo: UserLocation?
+    @Published var region: String?
     
-    init(username: String) {
+    init(
+        dependency: UserPageDependency
+    ) {
+        self.dependency = dependency
+    }
+    
+    @MainActor
+    func launch() async {
+        guard let userData = try? await model.getUserInfo(
+            username: dependency.username
+        ) else { return }
+        
+        self.userInfo = .init(
+            username: userData.friend_name,
+            friendsSince: userData.friends_since,
+            friendAmount: userData.friend_amount,
+            location: .init(latitude: userData.lat,
+                            longitude: userData.lng),
+            peopleVisited: userData.people_visited
+        )
         Task {
-            try await self.userInfo = getUserData(username: username)
+            try await self.region = userInfo?.location.getCity()
         }
     }
     
-    private func getUserData(username: String) async throws -> UserLocation? {
-        if let userData = try await model.getUserInfo(username: username) {
-            return .init(username: userData.friend_name,
-                                  friendsSince: userData.friends_since,
-                                  friendAmount: userData.friend_amount,
-                                  location: .init(latitude: userData.lat,
-                                                  longitude: userData.lng))
+    func handle(viewAction: UserPageViewAction) {
+        switch viewAction {
+        case .closeAndZoomOnUser:
+            guard let userInfo else {
+                return dependency.onTerminate(nil)
+            }
+            dependency.onTerminate(.updateMapTarget(userInfo.location))
         }
-        return nil
     }
-    
-    
-    
-    
 }

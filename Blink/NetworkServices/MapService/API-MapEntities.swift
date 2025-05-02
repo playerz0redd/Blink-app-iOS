@@ -11,7 +11,8 @@ import CoreLocation
 struct Location : Codable {
     var friend_name: String
     var friend_amount: Int
-    var friends_since: Date
+    var people_visited: Int
+    var friends_since: Date?
     var lat: Double
     var lng: Double
 }

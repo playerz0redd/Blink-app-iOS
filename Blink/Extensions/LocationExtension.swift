@@ -46,3 +46,11 @@ extension CLLocation {
         }
     }
 }
+
+extension CLLocationCoordinate2D {
+    func getCity() async throws -> String? {
+        let location = CLLocation(latitude: self.latitude, longitude: self.longitude)
+        var region = try await location.getRegion()
+        return region
+    }
+}

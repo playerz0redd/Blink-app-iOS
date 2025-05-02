@@ -15,7 +15,7 @@ struct PersonIconView: View {
         ZStack {
             Circle()
                 .frame(width: size, height: size)
-                .foregroundStyle(nickname.getColor())
+                .foregroundStyle(LinearGradient(colors: nickname.getColor(), startPoint: .top, endPoint: .bottom))
                 .overlay {
                     Text("\(nickname.first!)")
                         .font(.system(size: fontSize))

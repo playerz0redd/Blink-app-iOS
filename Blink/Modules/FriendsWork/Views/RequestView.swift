@@ -10,7 +10,7 @@ import SwiftUI
 struct RequestView: View {
     @StateObject private var viewModel = FriendsViewModel()
     @Binding var isShowingFriendInfoSheet: Bool
-    @Binding var selectedUser: UserLocation?
+    @Binding var selectedUser: String//UserLocation?
     var body: some View {
         VStack {
             VStack(alignment: .leading) {

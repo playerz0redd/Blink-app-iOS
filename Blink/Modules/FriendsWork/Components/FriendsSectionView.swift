@@ -10,15 +10,17 @@ import SwiftUI
 struct FriendsSectionView: View {
     @StateObject var viewModel: FriendsViewModel
     @Binding var isShowingFriendInfoSheet: Bool
-    @Binding var selectedUser: UserLocation?
+    var isPresented = false
+    @Binding var selectedUser: String//UserLocation?
     var body: some View {
         VStack {
             ScrollView {
                 ForEach(viewModel.peopleSearch, id: \.self.username) { friend in
                     HStack(spacing: 15) {
                         Button {
-                            selectedUser = .init(username: friend.username, friendsSince: Date(), friendAmount: 0, location: .init(latitude: 10, longitude: 10))
-                            isShowingFriendInfoSheet.toggle()
+                            viewModel.selectedUser = friend.username//.init(username: friend.username, friendsSince: Date(), friendAmount: 0, location: .init(latitude: 10, longitude: 10), peopleVisited: -1)
+                            //isShowingFriendInfoSheet.toggle()
+                            viewModel.isPresented.toggle()
                         } label: {
                             PersonIconView(nickname: friend.username, size: 35)
                             
@@ -121,6 +123,9 @@ struct FriendsSectionView: View {
                         .bold()
                         .padding(.top, 70)
                 }
+            }
+            .sheet(isPresented: $viewModel.isPresented) {
+                PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }))
             }
         }
     }

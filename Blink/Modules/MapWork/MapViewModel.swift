@@ -19,13 +19,15 @@ class MapViewModel : ObservableObject {
     @Published var friendStatus : FriendsInfoSend.Status = .request
     @Published var friendsLocation : [UserLocation] = []
     @Published var peopleVisited : Int = 0
-    @Published var selectedFriend : UserLocation? = nil
+    @Published var selectedFriend : UserLocation?
     @Published var address : String = ""
     @Published var region = MKCoordinateRegion(center: .init(), span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05))
     @Published var showBackground = true
     @Published var place : String = ""
     @Published var mapStyle = MapStyle.standard
     @Published var isPresentedFriendsSheet: Bool = false
+    @Published var isPresentedChats: Bool = false
+    var name: String = ""
     
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
@@ -54,7 +56,7 @@ class MapViewModel : ObservableObject {
                             location: CLLocationCoordinate2D(
                                 latitude: newLocation.location.latitude,
                                 longitude: newLocation.location.longitude
-                            )
+                            ), peopleVisited: newLocation.peopleVisited ?? 0
                         )
                     }
                     
@@ -72,7 +74,7 @@ class MapViewModel : ObservableObject {
             array.append(UserLocation(username: item.friend_name,
                                       friendsSince: item.friends_since,
                                       friendAmount: item.friend_amount,
-                                      location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng)))
+                                      location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng), peopleVisited: item.people_visited))
         }
         self.friendsLocation = array
     }
@@ -124,6 +126,7 @@ class MapViewModel : ObservableObject {
     }
     
     func selectFriend(_ friend: UserLocation) {
+        self.name = friend.username
         self.selectedFriend = friend
     }
     

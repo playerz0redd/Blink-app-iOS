@@ -14,7 +14,7 @@ struct FriendsView: View {
     @FocusState private var isFocused: Bool
     @State private var isShowingBackground: Bool = false
     @Binding var isShowingFriendInfoSheet: Bool
-    @Binding var selectedUser: UserLocation?
+    @Binding var selectedUser: String
     var body: some View {
         VStack(alignment: .leading) {
             HStack {

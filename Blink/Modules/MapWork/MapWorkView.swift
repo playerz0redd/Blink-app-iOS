@@ -27,7 +27,7 @@ struct MapView: View {
                             viewModel.region = .init(center: friend.location, span: .init(latitudeDelta: 0.03, longitudeDelta: 0.03))
                         }
                         Task {
-                            try await viewModel.getPeopleAmount()
+                            //try await viewModel.getPeopleAmount()
                             await viewModel.getRegion()
                             viewModel.isShowingSheet.toggle()
                             withAnimation {
@@ -83,7 +83,23 @@ struct MapView: View {
                 }
             }
         }) {
-            PersonSheet(username: viewModel.selectedFriend!.username)//, viewModel: viewModel)
+            if let username = viewModel.selectedFriend?.username {
+                PersonSheet(dependency: .init(
+                    username: username,
+                    onTerminate: { action in
+                        switch action {
+                        case .updateMapTarget(let coordinates):
+                            viewModel.region = MKCoordinateRegion(
+                                center: coordinates,
+                                span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            )
+                        case .none:
+                            break
+                        }
+                        viewModel.isShowingSheet = false
+                    }
+                ))
+            }
         }
         .sheet(isPresented: $viewModel.isPresentedFriendsSheet , onDismiss: {
             Task {
@@ -95,7 +111,20 @@ struct MapView: View {
                 }
             }
         }) {
-            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.selectedFriend)
+            
+            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.name)//$viewModel.selectedFriend.username)
+        }
+        .sheet(isPresented: $viewModel.isPresentedChats , onDismiss: {
+            Task {
+                try await viewModel.getFriendsLocation()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation {
+                    viewModel.showBackground = false
+                }
+            }
+        }) {
+            ChatsView()
         }
         .overlay(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
@@ -132,7 +161,10 @@ struct MapView: View {
                 }
                 
                 Button {
-                    print("friends")
+                    viewModel.isPresentedChats.toggle()
+                    withAnimation {
+                        viewModel.showBackground.toggle()
+                    }
                 } label: {
                     MapButtonView(
                         imageName: "bubble.left.and.text.bubble.right.fill",
@@ -143,7 +175,7 @@ struct MapView: View {
                 }
                 // this button is for step records 
                 Button {
-                    print("friends")
+                    viewModel.isPresentedChats.toggle()
                 } label: {
                     Image("sneaker-image")
                         .resizable()
