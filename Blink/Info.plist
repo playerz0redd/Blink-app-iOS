@@ -3,18 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>sadsad</string>
+	<string>Мы используем ваше местоположение даже в фоновом режиме</string>
 	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
 	<false/>
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>Мы используем ваше местоположение даже в фоновом режиме</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Мы используем ваше местоположение, чтобы показать вас на карте</string>
-<key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Мы используем ваше местоположение, чтобы показать вас на карте</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Нам нужны Ваши текущие шаги для таблицы рекордов</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
-
 </plist>

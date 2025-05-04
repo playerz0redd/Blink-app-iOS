@@ -11,15 +11,14 @@ struct FriendsSectionView: View {
     @StateObject var viewModel: FriendsViewModel
     @Binding var isShowingFriendInfoSheet: Bool
     var isPresented = false
-    @Binding var selectedUser: String//UserLocation?
+    @Binding var selectedUser: String
     var body: some View {
         VStack {
             ScrollView {
                 ForEach(viewModel.peopleSearch, id: \.self.username) { friend in
                     HStack(spacing: 15) {
                         Button {
-                            viewModel.selectedUser = friend.username//.init(username: friend.username, friendsSince: Date(), friendAmount: 0, location: .init(latitude: 10, longitude: 10), peopleVisited: -1)
-                            //isShowingFriendInfoSheet.toggle()
+                            viewModel.selectedUser = friend.username
                             viewModel.isPresented.toggle()
                         } label: {
                             PersonIconView(nickname: friend.username, size: 35)
@@ -38,22 +37,14 @@ struct FriendsSectionView: View {
                                     leftColor: .blue,
                                     rightColor: .purple,
                                     imagePath: "captions.bubble.fill") {
-                                        viewModel.buttonChangeStatus(
-                                            newStatus: .friend,
-                                            with: friend.username,
-                                            action: .updateItem
-                                        )
+ 
                                     }
                                 
                                 FriendsActionButton(
                                     leftColor: .purple,
                                     rightColor: .pink,
                                     imagePath: "location.fill") {
-                                        viewModel.buttonChangeStatus(
-                                            newStatus: .unknown,
-                                            with: friend.username,
-                                            action: .deleteItem
-                                        )
+ 
                                     }
                             }
                         case .request:

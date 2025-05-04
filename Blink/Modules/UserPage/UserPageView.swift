@@ -48,7 +48,9 @@ struct PersonSheet: View {
                     Text("\(viewModel.userInfo?.friendsSince!.getDistanceBetweenDates(to: Date.now) ?? 0) дней провели вместе 😉")
                         .foregroundStyle(.gray)
                 } else {
-                    Text("Not friends yet.")
+                    Text(viewModel.userInfo?.username != viewModel.myUsername ? "Not friends yet." : "That's you!")
+                        .padding(.top, 30)
+                        .foregroundStyle(.gray)
                 }
                 
             }.padding(.top, 320)
@@ -59,12 +61,9 @@ struct PersonSheet: View {
         }
     }
     
-    
-    
     func userInfo(username: String?) -> some View {
         ZStack {
             PersonIconView(nickname: username ?? "1", size: 120, fontSize: 55)
-            
             
             Text("@\(username ?? "")")
                 .font(.system(size: 19))

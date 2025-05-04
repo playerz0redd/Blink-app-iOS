@@ -10,7 +10,11 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @StateObject var viewModel: MapViewModel = .init(model: .init(networkManager: NetworkManager2()))
+    @StateObject var viewModel: MapViewModel
+    
+    init(isLogedIn: Binding<Bool>) {
+        self._viewModel = .init(wrappedValue: .init(model: .init(networkManager: NetworkManager2()), isLogedIn: isLogedIn))
+    }
     
     var body: some View {
         Map(coordinateRegion: $viewModel.region,
@@ -43,6 +47,7 @@ struct MapView: View {
                 try await viewModel.getFriendsLocation()
                 try await viewModel.connectLocationSocket()
             }
+            viewModel.updateSteps()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 withAnimation(.bouncy(duration: 0.6), {
                     viewModel.showBackground = false
@@ -58,20 +63,15 @@ struct MapView: View {
             MapUserLocationButton()
         })
         .overlay(alignment: .topTrailing, content: {
-            Button {
-                viewModel.changeMapStyle()
-            } label: {
-                Image(systemName: "map")
-                    .foregroundStyle(Color.blue)
-                    .font(.system(size: 18))
-                    .background {
-                        RoundedRectangle(cornerRadius: 9)
-                            .frame(width: 42, height: 42)
-                            .foregroundStyle(Color("base-color"))
-                    }
+            
+            VStack(spacing: 21) {
+                
+                profileButton
+                settingButton
+                
             }
             .padding(.top, 65)
-            .padding(.trailing, 16)
+            .padding(.trailing, 12)
 
         })
         .mapStyle(viewModel.mapStyle)
@@ -111,7 +111,7 @@ struct MapView: View {
             }
         }) {
             
-            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.name)//$viewModel.selectedFriend.username)
+            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.name)
         }
         .sheet(isPresented: $viewModel.isPresentedChats , onDismiss: {
             Task {
@@ -124,6 +124,16 @@ struct MapView: View {
             }
         }) {
             ChatsView(dependency: .init(networkManager: viewModel.model.networkManager))
+        }
+        .sheet(isPresented: $viewModel.isPresentedSettings , onDismiss: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation {
+                    viewModel.showBackground = false
+                }
+            }
+        }) {
+            SettingsView(dependency: .init(mapStyle: $viewModel.mapStyle, isLogedIn: $viewModel.isLogedIn))
+                .presentationDetents([.medium])
         }
         .overlay(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
@@ -198,4 +208,44 @@ struct MapView: View {
             }
         }
     }
+    
+    var profileButton: some View {
+        Button {
+            viewModel.selectedFriend = .init(username: viewModel.myUsername ?? "", location: viewModel.myLocation ?? .init())
+            viewModel.isShowingSheet.toggle()
+            withAnimation {
+                viewModel.showBackground.toggle()
+            }
+        } label: {
+            Image(systemName: "person.circle")
+                .foregroundStyle(Color.blue)
+                .font(.system(size: 24))
+                .background {
+                    RoundedRectangle(cornerRadius: 9)
+                        .frame(width: 42, height: 42)
+                        .foregroundStyle(Color("base-color"))
+                }
+        }
+    }
+    
+    var settingButton: some View {
+        Button {
+            viewModel.isPresentedSettings.toggle()
+            withAnimation {
+                viewModel.showBackground.toggle()
+            }
+        } label: {
+            Image(systemName: "transmission")
+                .foregroundStyle(Color.blue)
+                .bold()
+                .font(.system(size: 24))
+                .background {
+                    RoundedRectangle(cornerRadius: 9)
+                        .frame(width: 42, height: 42)
+                        .foregroundStyle(Color("base-color"))
+                }
+        }
+
+    }
 }
+

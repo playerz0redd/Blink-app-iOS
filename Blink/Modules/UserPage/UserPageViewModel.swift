@@ -25,6 +25,7 @@ final class UserPageViewModel: ObservableObject {
     
     private let dependency: UserPageDependency
     private let model = UserPageModel()
+    var myUsername: String?
     
     @Published var userInfo: UserLocation?
     @Published var region: String?
@@ -49,6 +50,8 @@ final class UserPageViewModel: ObservableObject {
                             longitude: userData.lng),
             peopleVisited: userData.people_visited
         )
+        
+        self.myUsername = model.getMyUsername()
         Task {
             try await self.region = userInfo?.location.getCity()
         }

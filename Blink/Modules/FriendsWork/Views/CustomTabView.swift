@@ -12,7 +12,7 @@ struct CustomTabView: View {
     private let tabNames = ["FRIENDS", "REQUESTS"]
     @Namespace var animation
     @Binding var isShowingFriendInfoSheet: Bool
-    @Binding var selectedUser: String//UserLocation?
+    @Binding var selectedUser: String
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tabNames, id: \.self) { tabName in
@@ -55,7 +55,7 @@ struct CustomTabView: View {
             case "REQUESTS":
                 RequestView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
             default:
-                MapView()
+                FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
             }
             
         }.transition(.opacity)

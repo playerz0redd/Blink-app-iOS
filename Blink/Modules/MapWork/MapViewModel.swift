@@ -27,7 +27,13 @@ class MapViewModel : ObservableObject {
     @Published var mapStyle = MapStyle.standard
     @Published var isPresentedFriendsSheet: Bool = false
     @Published var isPresentedChats: Bool = false
+    @Published var isPresentedSettings = false
     var name: String = ""
+    @Published var myUsername: String?
+    @Binding var isLogedIn: Bool
+    var myLocation: CLLocationCoordinate2D? {
+        locationManager.location
+    }
     
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
@@ -37,8 +43,10 @@ class MapViewModel : ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     
-    init(model: MapWorkModel) {
+    init(model: MapWorkModel, isLogedIn: Binding<Bool>) {
+        self._isLogedIn = isLogedIn
         self.model = model
+        self.myUsername = model.getMyUsername()
         print("created")
         Task {
             try? await updateMyLocation()
@@ -141,6 +149,12 @@ class MapViewModel : ObservableObject {
         currentIndex += 1
         currentIndex %= self.mapStyles.count
         self.mapStyle = self.mapStyles[currentIndex]
+    }
+    
+    func updateSteps() {
+        Task {
+            try await model.updateStepAmount()
+        }
     }
     
 }

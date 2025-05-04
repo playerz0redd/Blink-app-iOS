@@ -18,4 +18,5 @@ enum ApiURL: String {
     case locationSocket = "/ws/connect/"
     case userInfo = "/api/user/data/"
     case chatItems = "/api/users/chats/"
+    case updateSteps = "/api/users/steps/"
 }

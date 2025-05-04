@@ -13,6 +13,7 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     private let storageService = StorageService()
     let networkManager : NetworkManager2
     @Published var locationUpdate: UserLocation?
+    private let healthManager = HealthManager()
     
     func didReceiveText(text: String) async throws(ApiError) {
         if let data = text.data(using: .utf8) {
@@ -80,4 +81,21 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
             try await networkManager.connect(token: token, to: domain)
         }
     }
+    
+    func getMyUsername() -> String? {
+        storageService.getUsername()
+    }
+    
+    private func getSteps() async throws -> Double {
+        try await healthManager.getStepAmount()
+    }
+    
+    func updateStepAmount() async throws {
+        if let token = storageService.getToken() {
+            let steps = try await getSteps()
+            let url = ApiURL.updateSteps.rawValue + token + "/" + String(steps)
+            try await networkManager.sendRequest(url: url, method: .post, requestData: NetworkManager2.EmptyRequest())
+        }
+    }
+
 }

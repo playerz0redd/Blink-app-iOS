@@ -22,4 +22,8 @@ class UserPageModel {
         }
         return nil
     }
+    
+    func getMyUsername() -> String? {
+        storageManager.getUsername()
+    }
 }
