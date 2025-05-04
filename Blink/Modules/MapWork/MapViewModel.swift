@@ -31,6 +31,7 @@ class MapViewModel : ObservableObject {
     var name: String = ""
     @Published var myUsername: String?
     @Binding var isLogedIn: Bool
+    var currentStyleIndex = 0
     var myLocation: CLLocationCoordinate2D? {
         locationManager.location
     }

@@ -65,6 +65,7 @@ struct SettingsView: View {
     
     func styleButton(styleName: String, index: Int, style: MapStyle) -> some View {
         Button {
+            viewModel.currentStyleIndex = index
             withAnimation(.spring()) {
                 viewModel.selectedType = index
             }
