@@ -11,7 +11,7 @@ import SwiftUI
 class MapWorkModel: WebSocketDelegate, ObservableObject {
 
     private let storageService = StorageService()
-    private let networkManager : NetworkManager2
+    let networkManager : NetworkManager2
     @Published var locationUpdate: UserLocation?
     
     func didReceiveText(text: String) async throws(ApiError) -> SocketMessage? {
@@ -23,7 +23,10 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
                 print("good")
                 DispatchQueue.main.async {
                     print("обновляю @Published")
-                    self.locationUpdate = UserLocation(username: location.username, location: .init(latitude: location.latitude, longitude: location.longitude))
+                    self.locationUpdate = UserLocation(
+                        username: location.username,
+                        location: .init(latitude: location.latitude, longitude: location.longitude)
+                    )
                 }
                 return location
             }
@@ -52,7 +55,6 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
         if let token = storageService.getToken() {
             let locationUpdate = SocketLocationUpdateSend(type: .locationUpdate, token: token, latitude: latitude, longtitude: longitude)
             Task {
-                //try await connectLocationSocket(to: .locationSocket)
                 try await networkManager.sendDataSocket(data: locationUpdate)
             }
         }

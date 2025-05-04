@@ -90,7 +90,11 @@ class NetworkManager2 {
         webSocketTask?.resume()
         pingServer()
         while true {
-            try await startListening()
+            if webSocketTask != nil {
+                await startListening()
+            } else {
+                break
+            }
         }
     }
     
@@ -102,6 +106,7 @@ class NetworkManager2 {
                 print("timer")
                 self?.webSocketTask?.sendPing(pongReceiveHandler: { error in
                     print(error?.localizedDescription)
+                    return
                 })
             }
             timer.resume()
@@ -124,6 +129,7 @@ class NetworkManager2 {
             }
         } catch {
             print("Receive error: \(error.localizedDescription)")
+            webSocketTask = nil
         }
     }
 

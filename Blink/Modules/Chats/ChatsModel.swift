@@ -8,8 +8,12 @@
 import Foundation
 
 class ChatsModel {
-    private let networkManager = NetworkManager2()
+    let networkManager: NetworkManager2
     private let storageManager = StorageService()
+    
+    init(networkManager: NetworkManager2) {
+        self.networkManager = networkManager
+    }
     
     func getMyChats() async throws(ApiError) -> [ChatItem]? {
         if let token = storageManager.getToken() {

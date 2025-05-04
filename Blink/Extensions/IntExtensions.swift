@@ -13,4 +13,6 @@ extension Int {
     func increaseDigitAmount(upTo: Int) -> String {
         String(format: "%0\(upTo)d", self)
     }
+    
 }
+

@@ -32,7 +32,7 @@ class MapViewModel : ObservableObject {
     private var lastRequestDate: Date = Date.now
     private let timeInterval : TimeInterval = 1
     
-    private var model : MapWorkModel
+    var model : MapWorkModel
     var locationManager = LocationManager()
     private var cancellables = Set<AnyCancellable>()
     

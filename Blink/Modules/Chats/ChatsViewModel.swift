@@ -7,11 +7,20 @@
 
 import Foundation
 
+struct ChatDependency {
+    var networkManager: NetworkManager2
+}
+
 
 class ChatsViewModel: FriendsViewModel {
     @Published var myChats: [ChatItem]?
-    private let model = ChatsModel()
+    @Published var isPresentedChat = false
+    let model: ChatsModel
     let maxMessageSize = 20
+    
+    init(dependency: ChatDependency) {
+        self.model = .init(networkManager: dependency.networkManager)
+    }
     
     @MainActor func getMyChats() {
         Task {

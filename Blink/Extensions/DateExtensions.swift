@@ -35,12 +35,13 @@ extension Date {
     
     func getMonthAndDate() -> String {
         let calendar = Calendar.current
-        return calendar.component(.day, from: self).increaseDigitAmount(upTo: 2) + calendar.component(.month, from: self).increaseDigitAmount(upTo: 2)
+        return calendar.component(.day, from: self).increaseDigitAmount(upTo: 2) + "/" +
+        calendar.component(.month, from: self).increaseDigitAmount(upTo: 2)
     }
     
     func getFullDate() -> String {
         let calendar = Calendar.current
-        return calendar.component(.day, from: self).increaseDigitAmount(upTo: 2) + calendar.component(.month, from: self).increaseDigitAmount(upTo: 2) + calendar.component(.year, from: self).increaseDigitAmount(upTo: 2)
+        return calendar.component(.day, from: self).increaseDigitAmount(upTo: 2) + "/" + calendar.component(.month, from: self).increaseDigitAmount(upTo: 2) + "/" + calendar.component(.year, from: self).increaseDigitAmount(upTo: 2)
     }
     
     func getMessageDateString() -> String {
@@ -54,6 +55,13 @@ extension Date {
         default:
             return getFullDate()
         }
+    }
+    
+    func getDeltaBetweenDates(to date: Date) -> TimeInterval {
+        let calendar = Calendar.current
+        let selfDay = calendar.component(.day, from: self)
+        let dateDay = calendar.component(.day, from: date)
+        return TimeInterval(abs(dateDay - selfDay))
     }
     
     

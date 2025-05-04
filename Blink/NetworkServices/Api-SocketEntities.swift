@@ -134,3 +134,62 @@ struct UserLocation: Identifiable {
         case peopleVisited = "people_visited"
     }
 }
+
+
+class Message: SocketMessage, Hashable {
+    
+    static func == (lhs: Message, rhs: Message) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    var id = UUID()
+    var text: String
+    var time: Date
+    var token: String?
+    var usernameTo: String
+    
+    init(text: String, time: Date, token: String, usernameTo: String) {
+        self.text = text
+        self.time = time
+        self.token = token
+        self.usernameTo = usernameTo
+        super.init(type: .chatMessage)
+    }
+    
+    init(text: String, time: Date, usernameTo: String) {
+        self.text = text
+        self.time = time
+        self.usernameTo = usernameTo
+        super.init(type: .chatMessage)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case text
+        case time
+        case token
+        case usernameTo = "username_to"
+        case type
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        token = try container.decodeIfPresent(String.self, forKey: .token)
+        text = try container.decode(String.self, forKey: .text)
+        time = try container.decode(Date.self, forKey: .time)
+        usernameTo = try container.decode(String.self, forKey: .usernameTo)
+        try super.init(from: decoder)
+    }
+    
+    override func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(token, forKey: .token)
+        try container.encode(text, forKey: .text)
+        try container.encode(time, forKey: .time)
+        try container.encode(usernameTo, forKey: .usernameTo)
+        try container.encode(type, forKey: .type)
+    }
+}

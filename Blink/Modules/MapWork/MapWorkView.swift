@@ -10,7 +10,6 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    
     @StateObject var viewModel: MapViewModel = .init(model: .init(networkManager: NetworkManager2()))
     
     var body: some View {
@@ -124,7 +123,7 @@ struct MapView: View {
                 }
             }
         }) {
-            ChatsView()
+            ChatsView(dependency: .init(networkManager: viewModel.model.networkManager))
         }
         .overlay(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
