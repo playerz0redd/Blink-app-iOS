@@ -16,7 +16,7 @@ class MessagesModel: WebSocketDelegate {
     
     init(networkManager: NetworkManager2) {
         self.networkManager = networkManager
-        self.networkManager.addDelegate(delegate: didReceiveText)
+        self.networkManager.addDelegate(delegate: .init(delegate: self))
     }
     
     func sendMessage(text: String, to username: String) async throws {

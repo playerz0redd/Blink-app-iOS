@@ -34,7 +34,7 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     
     init(networkManager: NetworkManager2) {
         self.networkManager = networkManager
-        self.networkManager.addDelegate(delegate: didReceiveText)
+        self.networkManager.addDelegate(delegate: .init(delegate: self))
         //self.networkManager.receiveDelegate = self
         Task {
             await self.networkManager.startListening()

@@ -14,13 +14,20 @@ protocol WebSocketDelegate: AnyObject {
     func didReceiveText(text: String) async throws(ApiError)
 }
 
+struct Delegate {
+    weak var delegate: WebSocketDelegate?
+    
+    init(delegate: WebSocketDelegate? = nil) {
+        self.delegate = delegate
+    }
+}
+
 //MARK: - Class
 
 class NetworkManager2 {
     
     private var webSocketTask: URLSessionWebSocketTask?
     private var dispatchTimer: DispatchSourceTimer?
-    var receiveDelegate: WebSocketDelegate?
     
     enum RequestMethod : String {
         case get = "GET"
@@ -29,9 +36,9 @@ class NetworkManager2 {
     }
     
     private let serverIP = "192.168.1.105:8000"
-    private var delegates: [(String) async throws(ApiError) -> Void] = []
+    private var delegates: [Delegate] = []
     
-    func addDelegate(delegate: @escaping (String) async throws(ApiError) -> Void) {
+    func addDelegate(delegate: Delegate) {
         delegates.append(delegate)
     }
     
@@ -124,9 +131,8 @@ class NetworkManager2 {
             switch message {
             case .string(let text):
                 print("Received string: \(text)")
-                //try await receiveDelegate?.didReceiveText(text: text)
                 for delegate in delegates {
-                    try await delegate(text)
+                    try await delegate.delegate?.didReceiveText(text: text)
                 }
             case .data(let data):
                 print("Received data: \(data)")
