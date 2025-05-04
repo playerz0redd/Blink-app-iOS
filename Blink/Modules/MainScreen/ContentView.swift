@@ -13,8 +13,12 @@ struct ContentView: View {
         VStack {
             if viewModel.isLogedIn {
                 MapView(isLogedIn: $viewModel.isLogedIn)
+                    .transition(.slide)
+                    .animation(.smooth, value: viewModel.isLogedIn)
             } else {
-                SignUpView(isLoged: $viewModel.isLogedIn)
+                SignUpView(isLogedIn: $viewModel.isLogedIn)
+                    .transition(.slide)
+                    .animation(.smooth, value: viewModel.isLogedIn)
             }
         }
         .onAppear {

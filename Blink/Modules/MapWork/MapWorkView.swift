@@ -132,7 +132,7 @@ struct MapView: View {
                 }
             }
         }) {
-            SettingsView(dependency: .init(mapStyle: $viewModel.mapStyle, isLogedIn: $viewModel.isLogedIn))
+            SettingsView(dependency: .init(mapStyle: $viewModel.mapStyle, isLogedIn: $viewModel.isLogedIn, isShowingSettings: $viewModel.isPresentedSettings))
                 .presentationDetents([.medium])
         }
         .overlay(alignment: .topLeading) {

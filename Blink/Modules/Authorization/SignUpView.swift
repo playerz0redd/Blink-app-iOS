@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @Binding var isLoged : Bool
-    @StateObject var viewModel = AuthViewModel()
+    @StateObject var viewModel: AuthViewModel
+    
+    init(isLogedIn: Binding<Bool>) {
+        _viewModel = .init(wrappedValue: .init(isLogedIn: isLogedIn))
+    }
+    
     var body: some View {
         Image("log-in-image")
             .resizable()
@@ -40,7 +44,12 @@ struct SignUpView: View {
                     
                     Button {
                         Task {
-                            isLoged = try await viewModel.authefication(isLoged: isLoged, activity: .authorization)
+                            let isLogedIn = try await viewModel.authefication(activity: .authorization)
+                            await MainActor.run {
+                                withAnimation {
+                                    viewModel.isLogedIn = isLogedIn
+                                }
+                            }
                         }
                     } label: {
                         Text("Войти")
@@ -56,7 +65,12 @@ struct SignUpView: View {
                     
                     Button {
                         Task {
-                            isLoged = try await viewModel.authefication(isLoged: isLoged, activity: .registration)
+                            let isLogedIn = try await viewModel.authefication(activity: .authorization)
+                            await MainActor.run {
+                                withAnimation {
+                                    viewModel.isLogedIn = isLogedIn
+                                }
+                            }
                         }
                     } label: {
                         Text("Зарегистроваться")

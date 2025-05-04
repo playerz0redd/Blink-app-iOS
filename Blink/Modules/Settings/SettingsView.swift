@@ -38,7 +38,13 @@ struct SettingsView: View {
             }
             
             Button {
+                viewModel.isShowingSettings.toggle()
                 viewModel.logout()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    withAnimation {
+                        viewModel.isLogedIn = false
+                    }
+                }
             } label: {
                 Text("Exit")
                     .font(.system(size: 20, weight: .medium))

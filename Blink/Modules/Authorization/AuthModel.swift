@@ -20,19 +20,18 @@ class AuthModel {
         return storageService.getToken()
     }
     
-    func userAuth(activity: AuthViewModel.Activity) async throws -> String {
+    func saveUserInfo(username: String, password: String, token: String) {
+        storageService.saveUserInfo(token: token, username: username, password: password)
+    }
+    
+    func userAuth(activity: AuthViewModel.Activity) async throws -> String? {
         var tokenData = try await networkManager.sendRequest(
             url: activity == .authorization ? ApiURL.login.rawValue : ApiURL.registration.rawValue,
             method: .post,
             requestData: UserDataOut(username: username, password: password)
         )
         let token: String? = try Response.parse(from: tokenData!)
-        
-        if let token = token {
-            storageService.saveUserInfo(token: token, username: username, password: password)
-            return token
-        }
-        return ""
+        return token
     }
     
 }

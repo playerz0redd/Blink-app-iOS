@@ -6,30 +6,31 @@
 //
 
 import Foundation
+import SwiftUI
 
 @MainActor
 class AuthViewModel : ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
-    @Published var token: String = ""
     @Published var isLoading = false
+    @Binding var isLogedIn: Bool
     
     var model = AuthModel()
     
-    func authefication(isLoged : Bool, activity: Activity) async throws -> Bool {
+    init(isLogedIn: Binding<Bool>) {
+        self._isLogedIn = isLogedIn
+    }
+    
+    func authefication(activity: Activity) async throws -> Bool {
         isLoading = true
         defer {
             isLoading = false
         }
         model.username = username
         model.password = password
-        
-        do {
-            self.token = try await model.userAuth(activity: activity)
-        } catch let error as ApiError {
-            print(error.returnErrorMessage())
-        }
-        return self.token == "" ? false : true
+        guard let token = try await model.userAuth(activity: activity) else { return false }
+        model.saveUserInfo(username: username, password: password, token: token)
+        return true
     }
     
     enum Activity {
