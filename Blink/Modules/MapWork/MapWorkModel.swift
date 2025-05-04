@@ -14,12 +14,12 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     let networkManager : NetworkManager2
     @Published var locationUpdate: UserLocation?
     
-    func didReceiveText(text: String) async throws(ApiError) -> SocketMessage? {
+    func didReceiveText(text: String) async throws(ApiError) {
         if let data = text.data(using: .utf8) {
-            guard let message: SocketMessage = try Response.parse(from: data) else { return nil }
+            guard let message: SocketMessage = try Response.parse(from: data) else { return }
             
             if message.type == .locationUpdate {
-                guard let location: LocationUpdateGet = try Response.parse(from: data) else { return nil }
+                guard let location: LocationUpdateGet = try Response.parse(from: data) else { return }
                 print("good")
                 DispatchQueue.main.async {
                     print("обновляю @Published")
@@ -28,15 +28,14 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
                         location: .init(latitude: location.latitude, longitude: location.longitude)
                     )
                 }
-                return location
             }
         }
-        return nil
     }
     
     init(networkManager: NetworkManager2) {
         self.networkManager = networkManager
-        self.networkManager.receiveDelegate = self
+        self.networkManager.addDelegate(delegate: didReceiveText)
+        //self.networkManager.receiveDelegate = self
         Task {
             await self.networkManager.startListening()
         }
@@ -61,9 +60,11 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     }
     
     func getPeopleVisited(name: String, method: NetworkManager2.RequestMethod) async throws -> Int {
-        let data = try await networkManager.sendRequest(url: ApiURL.peopleVisited.rawValue + name,
-                                                        method: method,
-                                                        requestData: NetworkManager2.EmptyRequest())
+        let data = try await networkManager.sendRequest(
+            url: ApiURL.peopleVisited.rawValue + name,
+            method: method,
+            requestData: NetworkManager2.EmptyRequest()
+        )
         
         guard let data = data else { return 0 }
         

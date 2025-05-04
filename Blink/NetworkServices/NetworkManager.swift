@@ -11,7 +11,7 @@ import Foundation
 //MARK: - Delegate protocol
 
 protocol WebSocketDelegate: AnyObject {
-    func didReceiveText(text: String) async throws(ApiError) -> SocketMessage?
+    func didReceiveText(text: String) async throws(ApiError)
 }
 
 //MARK: - Class
@@ -20,7 +20,7 @@ class NetworkManager2 {
     
     private var webSocketTask: URLSessionWebSocketTask?
     private var dispatchTimer: DispatchSourceTimer?
-    weak var receiveDelegate: WebSocketDelegate?
+    var receiveDelegate: WebSocketDelegate?
     
     enum RequestMethod : String {
         case get = "GET"
@@ -28,7 +28,12 @@ class NetworkManager2 {
         case put = "PUT"
     }
     
-    private let serverIP = "192.168.1.105:8000"//"192.168.1.102:8000"//"http://192.168.1.108:8000"
+    private let serverIP = "192.168.1.105:8000"
+    private var delegates: [(String) async throws(ApiError) -> Void] = []
+    
+    func addDelegate(delegate: @escaping (String) async throws(ApiError) -> Void) {
+        delegates.append(delegate)
+    }
     
     func sendRequest<ApiData: Codable>(
         url: String,
@@ -119,7 +124,10 @@ class NetworkManager2 {
             switch message {
             case .string(let text):
                 print("Received string: \(text)")
-                try await receiveDelegate?.didReceiveText(text: text)
+                //try await receiveDelegate?.didReceiveText(text: text)
+                for delegate in delegates {
+                    try await delegate(text)
+                }
             case .data(let data):
                 print("Received data: \(data)")
             case .none:

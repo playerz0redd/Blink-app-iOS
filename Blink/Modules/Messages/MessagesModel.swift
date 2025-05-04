@@ -16,7 +16,7 @@ class MessagesModel: WebSocketDelegate {
     
     init(networkManager: NetworkManager2) {
         self.networkManager = networkManager
-        self.networkManager.receiveDelegate = self
+        self.networkManager.addDelegate(delegate: didReceiveText)
     }
     
     func sendMessage(text: String, to username: String) async throws {
@@ -36,21 +36,19 @@ class MessagesModel: WebSocketDelegate {
         return nil
     }
     
-    func didReceiveText(text: String) async throws(ApiError) -> SocketMessage? {
+    func didReceiveText(text: String) async throws(ApiError) {
         if let data = text.data(using: .utf8) {
-            guard let messageType: SocketMessage = try Response.parse(from: data) else { return nil }
+            guard let messageType: SocketMessage = try Response.parse(from: data) else { return }
             
             if messageType.type == .chatMessage {
-                guard let message: Message = try Response.parse(from: data) else { return nil }
+                guard let message: Message = try Response.parse(from: data) else { return }
                 print("good")
                 DispatchQueue.main.async {
                     print("------------обновляю @Published")
                     self.newMessage = Message(text: message.text, time: message.time, usernameTo: message.usernameTo)
                 }
-                return message
             }
         }
-        return nil
     }
     
     func getMyUsername() -> String? {
