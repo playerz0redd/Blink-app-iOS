@@ -19,7 +19,7 @@ extension ApiError {
                 case .friendshipNotFound:
                     return "Дружба не найдена"
                 case .requestError:
-                    return "Ошибка запроса"
+                    return "Ошибка соединения"
                 case .userAlreadyExist:
                     return "Пользователь существует"
                 case .unknown, .none:
@@ -27,6 +27,7 @@ extension ApiError {
                 case .socketError:
                     return "Ошибка соединения"
                 }
+            
                 
             case .appError(let appError):
                 switch appError {

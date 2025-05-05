@@ -25,7 +25,9 @@ class ChatsViewModel: FriendsViewModel {
     @MainActor func getMyChats() {
         Task {
             self.myChats = try await chatModel.getMyChats()
-            if let chats = self.myChats {
+            if var chats = self.myChats {
+                self.myChats = self.myChats?.sorted(by: { ($0.timeSent ?? .distantPast) > ($1.timeSent ?? .distantPast)})
+                chats = self.myChats!
                 for i in 0..<chats.count {
                     guard let message = self.myChats![i].lastMessage else { continue }
                     if message.count > maxMessageSize {

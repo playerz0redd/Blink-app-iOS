@@ -51,6 +51,7 @@ class NetworkManager2 {
         
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
+            request.timeoutInterval = 5
             if method == .post {
                 request.httpBody = try? JSONEncoder().encode(requestData)
             }

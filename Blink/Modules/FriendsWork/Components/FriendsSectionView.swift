@@ -117,7 +117,7 @@ struct FriendsSectionView: View {
                 }
             }
             .sheet(isPresented: $viewModel.isPresented, onDismiss: {
-                if viewModel.selectedUser == "" {
+                if viewModel.usernameToRequest == "" {
                     viewModel.getPeopleList()
                 } else {
                     viewModel.findPeopleByUsername(username: viewModel.usernameToRequest)

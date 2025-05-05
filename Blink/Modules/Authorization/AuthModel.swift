@@ -13,9 +13,6 @@ class AuthModel {
     private var networkManager = NetworkManager2()
     private var storageService = StorageService()
     
-    var username : String = ""
-    var password : String = ""
-    
     func getToken() -> String? {
         return storageService.getToken()
     }
@@ -24,12 +21,17 @@ class AuthModel {
         storageService.saveUserInfo(token: token, username: username, password: password)
     }
     
-    func userAuth(activity: AuthViewModel.Activity, username: String, password: String) async throws(ApiError) -> String? {
+    func userAuth(
+        activity: AuthViewModel.Activity,
+        username: String,
+        password: String
+    ) async throws(ApiError) -> String? {
         let tokenData = try await networkManager.sendRequest(
             url: activity == .authorization ? ApiURL.login.rawValue : ApiURL.registration.rawValue,
             method: .post,
             requestData: UserDataOut(username: username, password: password)
         )
+        
         let token: String? = try Response.parse(from: tokenData!)
         return token
     }

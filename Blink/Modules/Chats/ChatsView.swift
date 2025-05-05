@@ -76,7 +76,6 @@ struct ChatsView: View {
                             }
                         }
 
-                        
                         Divider()
                             .padding(.leading, 45)
                         
@@ -93,13 +92,18 @@ struct ChatsView: View {
                 viewModel.getPeopleList()
             }
             .sheet(isPresented: $viewModel.isPresented) {
+                viewModel.getMyChats()
+            } content: {
                 PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
             }
             .onAppear {
                 viewModel.getMyChats()
             }
             .sheet(isPresented: $viewModel.isPresentedChat) {
+                viewModel.getMyChats()
+            } content: {
                 MessagesView(dependency: .init(username: viewModel.selectedUser, networkManager: viewModel.model.networkManager))
             }
+
     }
 }

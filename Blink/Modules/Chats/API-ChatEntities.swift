@@ -8,7 +8,11 @@
 import Foundation
 
 
-struct ChatItem: Codable {
+struct ChatItem: Codable, Equatable, Comparable {
+    static func < (lhs: ChatItem, rhs: ChatItem) -> Bool {
+        lhs.timeSent ?? Date() < rhs.timeSent ?? Date()
+    }
+    
     var username: String
     var lastMessage: String?
     var usernameSent: String?
