@@ -10,7 +10,11 @@ import Foundation
 class FriendsWorkModel {
     private let storageService = StorageService()
     private let mapNetworkService = FriendService()
-    private let networkManager = NetworkManager2()
+    let networkManager: NetworkManager2
+    
+    init(networkManager: NetworkManager2) {
+        self.networkManager = networkManager
+    }
     
     func sendFriendRequest(to name: String) async throws {
         if let token = storageService.getToken() {

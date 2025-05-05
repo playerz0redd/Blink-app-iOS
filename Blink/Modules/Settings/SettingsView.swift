@@ -18,24 +18,32 @@ struct SettingsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 80) {
+        VStack(spacing: 50) {
             Text("Settings")
                 .foregroundStyle(.black)
                 .font(.system(size: 30, weight: .medium))
                 .padding(.top, 0)
+            VStack(spacing: 30) {
+                Text("Choose map style")
+                    .foregroundStyle(.black)
+                    .font(.system(size: 30, weight: .medium))
+                    .padding(0)
+                
+                HStack(spacing: 0) {
+                    styleButton(styleName: "standart", index: 0, style: .standard)
+                    styleButton(styleName: "hybrid", index: 1, style: .hybrid)
+                    styleButton(styleName: "imagery", index: 2, style: .imagery)
+                }
+                .background {
+                    RoundedRectangle(cornerRadius: 24)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .foregroundStyle(Color.black)
+                        .padding(10)
+                }
+            }
             
-            HStack(spacing: 0) {
-                styleButton(styleName: "standart", index: 0, style: .standard)
-                styleButton(styleName: "hybrid", index: 1, style: .hybrid)
-                styleButton(styleName: "imagery", index: 2, style: .imagery)
-            }
-            .background {
-                RoundedRectangle(cornerRadius: 24)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .foregroundStyle(Color.black)
-                    .padding(10)
-            }
+            Spacer()
             
             Button {
                 viewModel.isShowingSettings.toggle()
@@ -56,11 +64,12 @@ struct SettingsView: View {
                             .foregroundStyle(Color.black)
                             .padding(.horizontal, 10)
                     }
+                    .padding(.top, 30)
             }
 
         }
         .ignoresSafeArea(.all)
-        .padding(0)
+        .padding(.vertical, 25)
     }
     
     func styleButton(styleName: String, index: Int, style: MapStyle) -> some View {

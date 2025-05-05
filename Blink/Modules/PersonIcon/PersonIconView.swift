@@ -17,7 +17,7 @@ struct PersonIconView: View {
                 .frame(width: size, height: size)
                 .foregroundStyle(LinearGradient(colors: nickname.getColor(), startPoint: .top, endPoint: .bottom))
                 .overlay {
-                    Text("\(nickname.first!)")
+                    Text("\(nickname.first ?? "1")")
                         .font(.system(size: fontSize))
                         .bold()
                         .foregroundColor(.white)

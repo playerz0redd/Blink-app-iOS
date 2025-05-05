@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct FriendsSectionView: View {
     @StateObject var viewModel: FriendsViewModel
@@ -33,18 +34,16 @@ struct FriendsSectionView: View {
                         switch friend.status {
                         case .friend:
                             HStack(spacing: 27) {
-                                FriendsActionButton(
-                                    leftColor: .blue,
-                                    rightColor: .purple,
-                                    imagePath: "captions.bubble.fill") {
- 
-                                    }
+                                Text("friends")
+                                    .bold()
+                                    .foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing))
                                 
                                 FriendsActionButton(
                                     leftColor: .purple,
                                     rightColor: .pink,
-                                    imagePath: "location.fill") {
- 
+                                    imagePath: "captions.bubble.fill") {
+                                        viewModel.selectedUser = friend.username
+                                        viewModel.isPresentedMessages.toggle()
                                     }
                             }
                         case .request:
@@ -116,7 +115,10 @@ struct FriendsSectionView: View {
                 }
             }
             .sheet(isPresented: $viewModel.isPresented) {
-                PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }))
+                PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
+            }
+            .sheet(isPresented: $viewModel.isPresentedMessages) {
+                MessagesView(dependency: .init(username: viewModel.selectedUser, networkManager: viewModel.model.networkManager))
             }
         }
     }

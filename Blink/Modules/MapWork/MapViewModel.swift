@@ -13,7 +13,6 @@ import SwiftUI
 // MARK: - friends view has viewmodel, viewmodel has init from friends info array, use tabView, backend add recommended request
 
 class MapViewModel : ObservableObject {
-    @Published var friendsInfoArray : [PeopleInfoResult] = []
     @Published var isShowingSheet : Bool = false
     @Published var requestName : String = ""
     @Published var friendStatus : FriendsInfoSend.Status = .request

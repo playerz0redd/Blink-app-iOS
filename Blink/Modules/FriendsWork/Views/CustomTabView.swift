@@ -13,6 +13,14 @@ struct CustomTabView: View {
     @Namespace var animation
     @Binding var isShowingFriendInfoSheet: Bool
     @Binding var selectedUser: String
+    var networkManager: NetworkManager2
+    
+    init(isShowingFriendInfoSheet: Binding<Bool>, selectedUser: Binding<String>, networkManager: NetworkManager2) {
+        self._isShowingFriendInfoSheet = isShowingFriendInfoSheet
+        self._selectedUser = selectedUser
+        self.networkManager = networkManager
+    }
+    
     var body: some View {
         HStack(spacing: 0) {
             ForEach(tabNames, id: \.self) { tabName in
@@ -51,11 +59,11 @@ struct CustomTabView: View {
         Group {
             switch selectedTab {
             case "FRIENDS":
-                FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
+                FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser, networkManager: networkManager)
             case "REQUESTS":
-                RequestView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
+                RequestView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser, networkManager: networkManager)
             default:
-                FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser)
+                FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser, networkManager: networkManager)
             }
             
         }.transition(.opacity)

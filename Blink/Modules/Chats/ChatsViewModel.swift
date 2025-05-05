@@ -11,20 +11,20 @@ struct ChatDependency {
     var networkManager: NetworkManager2
 }
 
-
 class ChatsViewModel: FriendsViewModel {
     @Published var myChats: [ChatItem]?
     @Published var isPresentedChat = false
-    let model: ChatsModel
+    let chatModel: ChatsModel
     let maxMessageSize = 20
     
     init(dependency: ChatDependency) {
-        self.model = .init(networkManager: dependency.networkManager)
+        self.chatModel = .init(networkManager: dependency.networkManager)
+        super.init(networkManager: dependency.networkManager)
     }
     
     @MainActor func getMyChats() {
         Task {
-            self.myChats = try await model.getMyChats()
+            self.myChats = try await chatModel.getMyChats()
             if let chats = self.myChats {
                 for i in 0..<chats.count {
                     guard let message = self.myChats![i].lastMessage else { continue }

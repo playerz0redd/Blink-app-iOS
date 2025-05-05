@@ -93,7 +93,7 @@ struct ChatsView: View {
                 }
             }
             .sheet(isPresented: $viewModel.isPresented) {
-                PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }))
+                PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
             }
             .onAppear {
                 viewModel.getMyChats()

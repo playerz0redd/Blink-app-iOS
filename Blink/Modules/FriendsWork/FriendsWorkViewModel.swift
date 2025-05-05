@@ -10,13 +10,18 @@ import SwiftUI
 
 class FriendsViewModel : ObservableObject {
     
-    private let model = FriendsWorkModel()
+    let model: FriendsWorkModel
     
     @Published var usernameToRequest: String = ""
     @Published var friendStatus: SearchPerson.Status = .friend
     @Published var peopleSearch: [SearchPerson] = []
     @Published var selectedUser: String = ""
     @Published var isPresented = false
+    @Published var isPresentedMessages = false
+    
+    init(networkManager: NetworkManager2) {
+        self.model = .init(networkManager: networkManager)
+    }
     
     func sendFriendRequest() async throws {
         try await model.sendFriendRequest(to: self.selectedUser)

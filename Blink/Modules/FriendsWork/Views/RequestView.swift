@@ -8,9 +8,16 @@
 import SwiftUI
 
 struct RequestView: View {
-    @StateObject private var viewModel = FriendsViewModel()
+    @StateObject private var viewModel: FriendsViewModel
     @Binding var isShowingFriendInfoSheet: Bool
     @Binding var selectedUser: String
+    
+    init(isShowingFriendInfoSheet: Binding<Bool>, selectedUser: Binding<String>, networkManager: NetworkManager2) {
+        self._isShowingFriendInfoSheet = isShowingFriendInfoSheet
+        self._selectedUser = selectedUser
+        _viewModel = .init(wrappedValue: .init(networkManager: networkManager))
+    }
+    
     var body: some View {
         VStack {
             VStack(alignment: .leading) {

@@ -45,7 +45,7 @@ struct MessagesView: View {
             viewModel.getChatMessages()
         }
         .sheet(isPresented: $viewModel.isUserPagePresented) {
-            PersonSheet(dependency: .init(username: viewModel.chatWithUsername, onTerminate: {action in }))
+            PersonSheet(dependency: .init(username: viewModel.chatWithUsername, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
         }
     }
     

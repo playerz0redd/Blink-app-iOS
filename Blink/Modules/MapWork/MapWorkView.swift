@@ -96,7 +96,7 @@ struct MapView: View {
                             break
                         }
                         viewModel.isShowingSheet = false
-                    }
+                    }, networkManager: viewModel.model.networkManager
                 ))
             }
         }
@@ -111,7 +111,7 @@ struct MapView: View {
             }
         }) {
             
-            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.name)
+            CustomTabView(isShowingFriendInfoSheet: $viewModel.isShowingSheet, selectedUser: $viewModel.name, networkManager: viewModel.model.networkManager)
         }
         .sheet(isPresented: $viewModel.isPresentedChats , onDismiss: {
             Task {
@@ -163,9 +163,9 @@ struct MapView: View {
                 } label: {
                     MapButtonView(
                         imageName: "person.2.fill",
-                        imageSize: 27,
-                        rectangleWidth: 65,
-                        rectangleHeight: 75
+                        imageSize: 35,
+                        rectangleWidth: 75,
+                        rectangleHeight: 85
                     )
                 }
                 
@@ -181,20 +181,6 @@ struct MapView: View {
                         rectangleWidth: 75,
                         rectangleHeight: 85
                     )
-                }
-                // this button is for step records 
-                Button {
-                    viewModel.isPresentedChats.toggle()
-                } label: {
-                    Image("sneaker-image")
-                        .resizable()
-                        .frame(width: 40, height: 40)// 35 for center, 27
-                        .background {
-                            RoundedRectangle(cornerRadius: 20)
-                                .frame(width: 65, height: 75) // 70,85 for center, 60,75
-                                .foregroundStyle(Color("dark"))
-                                .opacity(0.7)
-                        }
                 }
 
             }.padding(.bottom, 20)

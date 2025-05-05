@@ -35,7 +35,7 @@ class NetworkManager2 {
         case put = "PUT"
     }
     
-    private let serverIP = "192.168.1.105:8000"
+    private let serverIP = "172.20.10.2:8000"
     private var delegates: [Delegate] = []
     
     func addDelegate(delegate: Delegate) {

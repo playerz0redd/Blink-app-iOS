@@ -10,7 +10,7 @@ import SwiftUI
 
 class MessagesModel: WebSocketDelegate {
     
-    private let networkManager: NetworkManager2
+    let networkManager: NetworkManager2
     private let storageManager = StorageService()
     @Published var newMessage: Message?
     

@@ -7,14 +7,22 @@
 
 import Foundation
 import SwiftUI
+import CoreLocation
 
 
 struct FriendsView: View {
-    @StateObject private var viewModel = FriendsViewModel()
+    @StateObject private var viewModel: FriendsViewModel
     @FocusState private var isFocused: Bool
     @State private var isShowingBackground: Bool = false
     @Binding var isShowingFriendInfoSheet: Bool
     @Binding var selectedUser: String
+    
+    init(isShowingFriendInfoSheet: Binding<Bool>, selectedUser: Binding<String>, networkManager: NetworkManager2) {
+        self._isShowingFriendInfoSheet = isShowingFriendInfoSheet
+        self._selectedUser = selectedUser
+        _viewModel = .init(wrappedValue: .init(networkManager: networkManager))
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {

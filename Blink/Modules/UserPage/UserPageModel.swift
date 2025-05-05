@@ -8,8 +8,12 @@
 import Foundation
 
 class UserPageModel {
-    let networkManager = NetworkManager2()
+    let networkManager: NetworkManager2
     let storageManager = StorageService()
+    
+    init(networkManager: NetworkManager2) {
+        self.networkManager = networkManager
+    }
     
     func getUserInfo(username: String) async throws(ApiError) -> Location? {
         if let token = storageManager.getToken() {

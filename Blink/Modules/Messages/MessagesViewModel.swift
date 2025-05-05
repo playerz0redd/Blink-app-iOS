@@ -15,7 +15,7 @@ struct MessagesDependency {
 
 
 class MessagesViewModel: ObservableObject {
-    private let model: MessagesModel
+    let model: MessagesModel
     @Published var chatWithUsername: String
     @Published var messages: [Message]?
     @Published var messageText: String = ""

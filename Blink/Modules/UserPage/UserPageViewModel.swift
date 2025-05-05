@@ -19,12 +19,13 @@ enum UserPageViewAction {
 struct UserPageDependency {
     let username: String
     let onTerminate: (UserPageTerminationAction?) -> Void
+    let networkManager: NetworkManager2
 }
 
 final class UserPageViewModel: ObservableObject {
     
     private let dependency: UserPageDependency
-    private let model = UserPageModel()
+    private let model: UserPageModel
     var myUsername: String?
     
     @Published var userInfo: UserLocation?
@@ -34,6 +35,7 @@ final class UserPageViewModel: ObservableObject {
         dependency: UserPageDependency
     ) {
         self.dependency = dependency
+        self.model = .init(networkManager: dependency.networkManager)
     }
     
     @MainActor
