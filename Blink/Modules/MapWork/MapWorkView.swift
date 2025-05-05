@@ -213,12 +213,15 @@ struct MapView: View {
                             }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                                 viewModel.errorState.clearError()
+                                
                                 Task {
                                     await viewModel.connectLocationSocket()
                                 }
+                                
                                 Task {
                                     await viewModel.getFriendsLocation()
                                 }
+                                
                             }
                         } label: {
                             Image(systemName: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90")
