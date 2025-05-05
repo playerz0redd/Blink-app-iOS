@@ -49,16 +49,13 @@ enum ApiError: Error, Equatable {
 
 struct ErrorState {
     var errorType: ApiError?
-    var isError = false
     
     mutating func setError(error: ApiError) {
         self.errorType = error
-        self.isError = true
     }
     
     mutating func clearError() {
         self.errorType = nil
-        self.isError = false
     }
 }
 

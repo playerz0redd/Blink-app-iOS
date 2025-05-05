@@ -10,9 +10,9 @@ import MapKit
 import Combine
 import SwiftUI
 
-// MARK: - friends view has viewmodel, viewmodel has init from friends info array, use tabView, backend add recommended request
 
 class MapViewModel : ObservableObject {
+    @Published var isButtonRotating = false
     @Published var isShowingSheet : Bool = false
     @Published var requestName : String = ""
     @Published var friendStatus : FriendsInfoSend.Status = .request
@@ -156,12 +156,14 @@ class MapViewModel : ObservableObject {
         self.selectedFriend = friend
     }
     
-    func connectLocationSocket() async {
+    @MainActor func connectLocationSocket() async {
         do {
             try await model.connectLocationSocket(to: ApiURL.locationSocket)
-        } catch {
+        } catch let error {
             self.errorState.setError(error: error)
+            return
         }
+        self.errorState.clearError()
     }
     
     private let mapStyles : [MapStyle] = [.standard, .imagery, .hybrid]
@@ -171,12 +173,6 @@ class MapViewModel : ObservableObject {
         currentIndex += 1
         currentIndex %= self.mapStyles.count
         self.mapStyle = self.mapStyles[currentIndex]
-    }
-    
-    func updateSteps() {
-        Task {
-            try await model.updateStepAmount()
-        }
     }
     
 }

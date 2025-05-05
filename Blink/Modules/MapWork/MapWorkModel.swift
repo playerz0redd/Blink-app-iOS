@@ -80,17 +80,5 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     func getMyUsername() -> String? {
         storageService.getUsername()
     }
-    
-    private func getSteps() async throws -> Double {
-        try await healthManager.getStepAmount()
-    }
-    
-    func updateStepAmount() async throws {
-        if let token = storageService.getToken() {
-            let steps = try await getSteps()
-            let url = ApiURL.updateSteps.rawValue + token + "/" + String(steps)
-            try await networkManager.sendRequest(url: url, method: .post, requestData: NetworkManager2.EmptyRequest())
-        }
-    }
 
 }

@@ -35,7 +35,7 @@ class NetworkManager2 {
         case put = "PUT"
     }
     
-    private let serverIP = "192.168.1.102:8000"//"192.168.1.103:8000"
+    private let serverIP = "192.168.1.103:8000"//"192.168.1.103:8000"
     private var delegates: [Delegate] = []
     
     func addDelegate(delegate: Delegate) {
@@ -95,7 +95,7 @@ class NetworkManager2 {
     }
     
     func connect(token: String, to domain: ApiURL) async throws(ApiError) {
-        guard webSocketTask == nil else { return }
+        //guard webSocketTask == nil else { return }
         let url = URL(string: "ws://\(serverIP)" + domain.rawValue + "\(token)")
         webSocketTask = URLSession.shared.webSocketTask(with: url!)
         webSocketTask?.resume()

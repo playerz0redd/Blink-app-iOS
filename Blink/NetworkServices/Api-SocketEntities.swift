@@ -109,7 +109,11 @@ class LocationUpdateGet: SocketLocationUpdateSend {
     }
 }
 
-struct UserLocation: Identifiable {
+struct UserLocation: Identifiable, Equatable {
+    static func == (lhs: UserLocation, rhs: UserLocation) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     var id = UUID()
     var username : String
     var friendsSince: Date?

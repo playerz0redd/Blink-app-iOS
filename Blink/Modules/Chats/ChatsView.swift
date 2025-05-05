@@ -24,7 +24,7 @@ struct ChatsView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             
             ScrollView {
-                if let chats = viewModel.myChats {
+                if let chats = viewModel.myChats, !chats.isEmpty {
                     
                     ForEach(chats, id: \.username) { chat in
                         HStack {
@@ -81,16 +81,16 @@ struct ChatsView: View {
                             .padding(.leading, 45)
                         
                     }
+                } else {
+                    Text("Chats not found")
+                        .font(.system(size: 30, weight: .medium))
+                        .padding(.top, 200)
                 }
             }
         }.padding(.horizontal, 15)
             .padding(.top, 15)
             .task {
-                do {
-                    try await viewModel.getPeopleList()
-                }catch {
-                    
-                }
+                viewModel.getPeopleList()
             }
             .sheet(isPresented: $viewModel.isPresented) {
                 PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
@@ -100,7 +100,6 @@ struct ChatsView: View {
             }
             .sheet(isPresented: $viewModel.isPresentedChat) {
                 MessagesView(dependency: .init(username: viewModel.selectedUser, networkManager: viewModel.model.networkManager))
-                //MessagesView(viewModel: .init(username: viewModel.selectedUser))
             }
     }
 }

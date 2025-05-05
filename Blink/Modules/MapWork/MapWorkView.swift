@@ -30,7 +30,6 @@ struct MapView: View {
                             viewModel.region = .init(center: friend.location, span: .init(latitudeDelta: 0.03, longitudeDelta: 0.03))
                         }
                         Task {
-                            //try await viewModel.getPeopleAmount()
                             await viewModel.getRegion()
                             viewModel.isShowingSheet.toggle()
                             withAnimation {
@@ -41,13 +40,14 @@ struct MapView: View {
             }
         }
         .ignoresSafeArea(.all)
+        .task {
+            await viewModel.getFriendsLocation()
+        }
         .onAppear {
             Task {
-                await viewModel.getPlace()
-                await viewModel.getFriendsLocation()
                 await viewModel.connectLocationSocket()
+                await viewModel.getPlace()
             }
-            viewModel.updateSteps()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 withAnimation(.bouncy(duration: 0.6), {
                     viewModel.showBackground = false
@@ -194,20 +194,52 @@ struct MapView: View {
             }
         }
         .overlay(alignment: .top) {
-            if viewModel.errorState.errorType != nil {
-                Text(viewModel.errorState.errorType!.returnErrorMessage())
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+            VStack {
+                if viewModel.errorState.errorType != nil {
+                    HStack(spacing: 10) {
+                        Image(systemName: "exclamationmark.circle")
+                            .foregroundStyle(.white)
+                            .font(.system(size: 30))
+                        
+                        Text(viewModel.errorState.errorType!.returnErrorMessage())
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white)
+                        
+                        Spacer()
+                        
+                        Button {
+                            withAnimation(.easeOut(duration: 0.4)) {
+                                viewModel.isButtonRotating.toggle()
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                                viewModel.errorState.clearError()
+                                Task {
+                                    await viewModel.connectLocationSocket()
+                                }
+                                Task {
+                                    await viewModel.getFriendsLocation()
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90")
+                                .font(.system(size: 30))
+                                .rotationEffect(.degrees(viewModel.isButtonRotating ? 0 : 360))
+                                .animation(.easeInOut, value: viewModel.isButtonRotating)
+                        }
+                        
+                    }
                     .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 20)
                     .background {
                         RoundedRectangle(cornerRadius: 15)
                             .foregroundStyle(Color("dark"))
-                            .opacity(0.8)
                             .frame(height: 60)
                     }
-                    .padding(.top, 90)
-                    .padding(.horizontal, 20)
-            }
+                    .padding(.horizontal, 10)
+                    .padding(.top, 30)
+                    .transition(.opacity .combined(with: .scale))
+                }
+            }.animation(.spring, value: viewModel.errorState.errorType)
         }
     }
     
