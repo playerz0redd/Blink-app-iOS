@@ -23,9 +23,9 @@ extension ApiError {
                 case .userAlreadyExist:
                     return "Пользователь существует"
                 case .unknown, .none:
-                    return "Неизвестная ошибка сервера"
-                case .some(.socketError):
-                    return "Неизвестная ошибка сервера"
+                    return "Ошибка соединения"
+                case .socketError:
+                    return "Ошибка соединения"
                 }
                 
             case .appError(let appError):
@@ -33,13 +33,13 @@ extension ApiError {
                 case .invalidUrl:
                     return "Неверный URL"
                 case .systemError:
-                    return "Системная ошибка:"
+                    return "Системная ошибка"
                 case .noInternetConnection:
                     return "Нет соединения с интернетом"
                 case .locationIsNotAllowed:
                     return "Нет прав для работы с вашей геолокацией"
                 case .encoderError:
-                    return "Неизвестная ошибка сервера"
+                    return "Системная ошибка"
                 case .notAllFieldsFilled:
                     return "Не все поля заполнены"
                 }

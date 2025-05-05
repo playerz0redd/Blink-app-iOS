@@ -10,7 +10,6 @@ import Foundation
 
 struct Response<ReturnType : Decodable> : Decodable {
     let data: ReturnType?
-    let error: ApiError.ServerError?
     
     static func parse(from data: Data) throws(ApiError) -> ReturnType? {
         let decoder = JSONDecoder()
@@ -27,12 +26,8 @@ struct Response<ReturnType : Decodable> : Decodable {
                 return data
             }
             
-            if let error = convertedData.error {
-                throw ApiError.serverError(error)
-            }
-            
         } catch {
-            throw .appError(.systemError)
+            throw .appError(.encoderError)
         }
         return nil
     }

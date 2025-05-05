@@ -126,8 +126,8 @@
             filePath = "Blink/NetworkServices/Decoder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17"
-            endingLineNumber = "17"
+            startingLineNumber = "16"
+            endingLineNumber = "16"
             landmarkName = "Response"
             landmarkType = "14">
          </BreakpointContent>
@@ -142,8 +142,8 @@
             filePath = "Blink/NetworkServices/Decoder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
             landmarkName = "Response"
             landmarkType = "14">
          </BreakpointContent>
@@ -158,8 +158,8 @@
             filePath = "Blink/NetworkServices/Decoder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
             landmarkName = "Response"
             landmarkType = "14">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "Blink/NetworkServices/Decoder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
             landmarkName = "Response"
             landmarkType = "14">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "Blink/Modules/MapWork/MapWorkModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
             landmarkName = "MapWorkModel"
             landmarkType = "3">
          </BreakpointContent>
@@ -238,8 +238,8 @@
             filePath = "Blink/Modules/MapWork/MapWorkModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
             landmarkName = "MapWorkModel"
             landmarkType = "3">
          </BreakpointContent>
@@ -254,8 +254,8 @@
             filePath = "Blink/Modules/MapWork/MapWorkModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
             landmarkName = "MapWorkModel"
             landmarkType = "3">
          </BreakpointContent>
@@ -302,8 +302,8 @@
             filePath = "Blink/Modules/MapWork/MapViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "104"
-            endingLineNumber = "104"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
             landmarkName = "updateMyLocation()"
             landmarkType = "7">
          </BreakpointContent>
@@ -318,8 +318,8 @@
             filePath = "Blink/Modules/MapWork/MapViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
             landmarkName = "updateMyLocation()"
             landmarkType = "7">
          </BreakpointContent>
@@ -334,10 +334,10 @@
             filePath = "Blink/Modules/MapWork/MapWorkModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "updateMyLocation(latitude:longitude:)"
-            landmarkType = "7">
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "MapWorkModel"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -350,8 +350,8 @@
             filePath = "Blink/NetworkServices/NetworkManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
             landmarkName = "NetworkManager2"
             landmarkType = "3">
          </BreakpointContent>
@@ -360,6 +360,22 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "41E4AB6F-D3F6-4320-8CA0-E2684F7CFF1C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/NetworkServices/NetworkManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "NetworkManager2"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DF8319B4-FB12-4980-8A5C-CF88003D534F"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -375,22 +391,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DF8319B4-FB12-4980-8A5C-CF88003D534F"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Blink/NetworkServices/NetworkManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
-            landmarkName = "NetworkManager2"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "0D48AEE9-42F0-4C13-A456-33C62D8A513C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -398,8 +398,8 @@
             filePath = "Blink/NetworkServices/NetworkManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
             landmarkName = "NetworkManager2"
             landmarkType = "3">
          </BreakpointContent>
@@ -424,7 +424,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "DE7E86A2-0976-4A6C-A2F0-F8CBF277662E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Blink/HealthManager/HealthManager.swift"
@@ -440,7 +440,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "29A59900-19E4-4800-82B4-38777B88E849"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Blink/HealthManager/HealthManager.swift"
@@ -456,7 +456,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "A125337D-F224-4436-B3CD-BE3559126D9B"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Blink/HealthManager/HealthManager.swift"
@@ -472,7 +472,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "92ABE84D-7F1B-40E3-AB89-3C29FE25A9CC"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Blink/HealthManager/HealthManager.swift"
@@ -488,7 +488,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "26DB22F7-9F66-4027-ADF6-A033D979446E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Blink/HealthManager/HealthManager.swift"
@@ -504,7 +504,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "9DB31940-4498-49F9-A272-ECBCA1AB7D9E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Blink/HealthManager/HealthManager.swift"
@@ -542,8 +542,8 @@
             filePath = "Blink/Modules/Authorization/AuthViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
             landmarkName = "checkAllFieldsAreFilled()"
             landmarkType = "7">
          </BreakpointContent>
@@ -560,6 +560,134 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "51"
             endingLineNumber = "51"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C8C28433-B461-463B-B222-B49AADB37244"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/Modules/MapWork/MapViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "getFriendsLocation()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7AB1A20F-80F1-409D-A37A-78DD1973B88E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/Modules/MapWork/MapWorkModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "MapWorkModel"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7EA50472-4E8A-4F63-A324-15E6E3C18247"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/Modules/MapWork/MapWorkModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "MapWorkModel"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F69C4706-DB1F-457B-B70C-A6B42F8D3550"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/NetworkServices/NetworkManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "NetworkManager2"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "70DBED0F-0E4D-4CC9-A2D9-A94DEDB42B36"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/NetworkServices/NetworkManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "NetworkManager2"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "26C00DE5-C20F-49D2-AED8-7B653691F1E5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/HealthManager/HealthManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "getPermission()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5DEC4A71-C0DF-47E5-A42C-426A1C35FBB4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/Modules/MapWork/MapViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "getFriendsLocation()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "693D16BF-C20D-47E6-8A91-D69ABEB85C8B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Blink/Modules/MapWork/MapWorkView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>

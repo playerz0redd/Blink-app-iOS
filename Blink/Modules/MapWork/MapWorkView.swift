@@ -44,8 +44,8 @@ struct MapView: View {
         .onAppear {
             Task {
                 await viewModel.getPlace()
-                try await viewModel.getFriendsLocation()
-                try await viewModel.connectLocationSocket()
+                await viewModel.getFriendsLocation()
+                await viewModel.connectLocationSocket()
             }
             viewModel.updateSteps()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -56,7 +56,7 @@ struct MapView: View {
             do {
                 try viewModel.locationManager.checkLocationServicesIsEnabled()
             } catch {
-                print("+++")
+                viewModel.errorState.setError(error: .appError(.locationIsNotAllowed))
             }
         }
         .mapControls({
@@ -102,7 +102,7 @@ struct MapView: View {
         }
         .sheet(isPresented: $viewModel.isPresentedFriendsSheet , onDismiss: {
             Task {
-                try await viewModel.getFriendsLocation()
+                await viewModel.getFriendsLocation()
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 withAnimation {
@@ -115,7 +115,7 @@ struct MapView: View {
         }
         .sheet(isPresented: $viewModel.isPresentedChats , onDismiss: {
             Task {
-                try await viewModel.getFriendsLocation()
+                await viewModel.getFriendsLocation()
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 withAnimation {
@@ -191,6 +191,22 @@ struct MapView: View {
                     .opacity(0.5)
                     .ignoresSafeArea(.all)
                     .transition(.opacity)
+            }
+        }
+        .overlay(alignment: .top) {
+            if viewModel.errorState.errorType != nil {
+                Text(viewModel.errorState.errorType!.returnErrorMessage())
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .background {
+                        RoundedRectangle(cornerRadius: 15)
+                            .foregroundStyle(Color("dark"))
+                            .opacity(0.8)
+                            .frame(height: 60)
+                    }
+                    .padding(.top, 90)
+                    .padding(.horizontal, 20)
             }
         }
     }

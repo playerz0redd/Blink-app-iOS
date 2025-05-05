@@ -17,13 +17,7 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     
     func didReceiveText(text: String) async throws(ApiError) {
         if let data = text.data(using: .utf8) {
-            var message: SocketMessage
-            do {
-                guard let mes: SocketMessage = try Response.parse(from: data) else { return }
-                message = mes
-            } catch {
-                throw ApiError.appError(.encoderError)
-            }
+            guard let message: SocketMessage = try Response.parse(from: data) else { return }
             
             if message.type == .locationUpdate {
                 guard let location: LocationUpdateGet = try Response.parse(from: data) else { return }
@@ -40,13 +34,12 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     init(networkManager: NetworkManager2) {
         self.networkManager = networkManager
         self.networkManager.addDelegate(delegate: .init(delegate: self))
-        //self.networkManager.receiveDelegate = self
         Task {
-            await self.networkManager.startListening()
+            try await self.networkManager.startListening()
         }
     }
     
-    func getFriendsLocation() async throws -> [Location]? {
+    func getFriendsLocation() async throws(ApiError) -> [Location]? {
         if let token = storageService.getToken() {
             let url = ApiURL.friendsLocation.rawValue + token
             let data = try await networkManager.sendRequest(url: url, method: .get, requestData: NetworkManager2.EmptyRequest())
@@ -55,16 +48,14 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
         return nil
     }
     
-    func updateMyLocation(latitude: Double, longitude: Double) async throws {
+    func updateMyLocation(latitude: Double, longitude: Double) async throws(ApiError) {
         if let token = storageService.getToken() {
             let locationUpdate = SocketLocationUpdateSend(type: .locationUpdate, token: token, latitude: latitude, longtitude: longitude)
-            Task {
-                try await networkManager.sendDataSocket(data: locationUpdate)
-            }
+            try await networkManager.sendDataSocket(data: locationUpdate)
         }
     }
     
-    func getPeopleVisited(name: String, method: NetworkManager2.RequestMethod) async throws -> Int {
+    func getPeopleVisited(name: String, method: NetworkManager2.RequestMethod) async throws(ApiError) -> Int {
         let data = try await networkManager.sendRequest(
             url: ApiURL.peopleVisited.rawValue + name,
             method: method,
@@ -80,7 +71,7 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
         return 0
     }
     
-    func connectLocationSocket(to domain: ApiURL) async throws {
+    func connectLocationSocket(to domain: ApiURL) async throws(ApiError) {
         if let token = storageService.getToken() {
             try await networkManager.connect(token: token, to: domain)
         }

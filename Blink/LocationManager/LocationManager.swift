@@ -23,7 +23,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
             locationManager?.distanceFilter = 50
             locationManager?.startUpdatingLocation()
         } else {
-            print("---")
             throw .appError(.locationIsNotAllowed)
         }
     }
@@ -39,13 +38,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
         case .notDetermined:
             print("Location error")
             locationManager.requestWhenInUseAuthorization()
-            //locationManager.requestAlwaysAuthorization()
         case .restricted:
             print("Location error")
-            //throw .appError(.locationIsNotAllowed)
         case .denied:
             print("Location error")
-            //throw .appError(.locationIsNotAllowed)
         case .authorizedAlways:
             print("ok")
             locationManager.startUpdatingLocation()
@@ -53,7 +49,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
         case .authorizedWhenInUse:
             locationManager.requestAlwaysAuthorization()
             print("Location error")
-            //throw .appError(.locationIsNotAllowed)
         @unknown default:
             print("Location error")
             break

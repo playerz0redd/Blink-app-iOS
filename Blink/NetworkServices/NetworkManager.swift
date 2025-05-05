@@ -35,7 +35,7 @@ class NetworkManager2 {
         case put = "PUT"
     }
     
-    private let serverIP = "192.168.1.103:8000"
+    private let serverIP = "192.168.1.102:8000"//"192.168.1.103:8000"
     private var delegates: [Delegate] = []
     
     func addDelegate(delegate: Delegate) {
@@ -47,7 +47,6 @@ class NetworkManager2 {
         method: RequestMethod,
         requestData: ApiData?) async throws(ApiError) -> Data? {
             
-            // config url with call
             let url = URL(string: "http://" + serverIP + url)!
         
             var request = URLRequest(url: url)
@@ -95,7 +94,7 @@ class NetworkManager2 {
         }
     }
     
-    func connect(token: String, to domain: ApiURL) async throws {
+    func connect(token: String, to domain: ApiURL) async throws(ApiError) {
         guard webSocketTask == nil else { return }
         let url = URL(string: "ws://\(serverIP)" + domain.rawValue + "\(token)")
         webSocketTask = URLSession.shared.webSocketTask(with: url!)
@@ -103,7 +102,7 @@ class NetworkManager2 {
         pingServer()
         while true {
             if webSocketTask != nil {
-                await startListening()
+                try await startListening()
             } else {
                 break
             }
@@ -125,7 +124,7 @@ class NetworkManager2 {
         }
     }
 
-    func startListening() async {
+    func startListening() async throws(ApiError) {
         do {
             let message = try await webSocketTask?.receive()
             switch message {
@@ -144,6 +143,7 @@ class NetworkManager2 {
         } catch {
             print("Receive error: \(error.localizedDescription)")
             webSocketTask = nil
+            throw .serverError(.init(error: .socketError))
         }
     }
 

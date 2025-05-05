@@ -31,7 +31,7 @@ class MapViewModel : ObservableObject {
     @Published var myUsername: String?
     @Binding var isLogedIn: Bool
     var currentStyleIndex = 0
-    @Published var errorState: ErrorState?
+    @Published var errorState = ErrorState()
     var myLocation: CLLocationCoordinate2D? {
         locationManager.location
     }
@@ -50,7 +50,7 @@ class MapViewModel : ObservableObject {
         self.myUsername = model.getMyUsername()
         print("created")
         Task {
-            try? await updateMyLocation()
+            await updateMyLocation()
             model.$locationUpdate
                 .compactMap { $0 }
                 .sink { [weak self] newLocation in
@@ -75,21 +75,33 @@ class MapViewModel : ObservableObject {
         }
     }
     
-    @MainActor func getFriendsLocation() async throws {
-        let locationArray = try await model.getFriendsLocation()
-        guard let locations = locationArray else { return }
+    @MainActor func getFriendsLocation() async {
+        var locations : [Location]?
+        do {
+            let locationArray = try await model.getFriendsLocation()
+            locations = locationArray
+        } catch let error {
+            self.errorState.setError(error: error)
+            return
+        }
+        
+        guard locations != nil else { return }
         
         var array : [UserLocation] = []
-        for item in locations {
-            array.append(UserLocation(username: item.friend_name,
-                                      friendsSince: item.friends_since,
-                                      friendAmount: item.friend_amount,
-                                      location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng), peopleVisited: item.people_visited, status: item.status))
+        for item in locations! {
+            array.append(UserLocation(
+                username: item.friend_name,
+                friendsSince: item.friends_since,
+                friendAmount: item.friend_amount,
+                location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng),
+                peopleVisited: item.people_visited,
+                status: item.status)
+            )
         }
         self.friendsLocation = array
     }
     
-    @MainActor func updateMyLocation() async throws {
+    @MainActor func updateMyLocation() async {
         if abs(region.center.latitude) < 0.01 && abs(region.center.longitude) < 0.01 {
             region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: locationManager.location?.latitude ?? 0, longitude: locationManager.location?.longitude ?? 0),
@@ -107,8 +119,12 @@ class MapViewModel : ObservableObject {
         }.store(in: &cancellables)
     }
     
-    @MainActor func getPeopleAmount() async throws {
-        self.peopleVisited = try await model.getPeopleVisited(name: self.selectedFriend?.username ?? "", method: .get)
+    @MainActor func getPeopleAmount() async {
+        do {
+            self.peopleVisited = try await model.getPeopleVisited(name: self.selectedFriend?.username ?? "", method: .get)
+        } catch let error {
+            self.errorState.setError(error: error)
+        }
     }
     
     @MainActor func getRegion() async {
@@ -140,8 +156,12 @@ class MapViewModel : ObservableObject {
         self.selectedFriend = friend
     }
     
-    func connectLocationSocket() async throws {
-        try await model.connectLocationSocket(to: ApiURL.locationSocket)
+    func connectLocationSocket() async {
+        do {
+            try await model.connectLocationSocket(to: ApiURL.locationSocket)
+        } catch {
+            self.errorState.setError(error: error)
+        }
     }
     
     private let mapStyles : [MapStyle] = [.standard, .imagery, .hybrid]

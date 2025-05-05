@@ -25,7 +25,7 @@ class AuthModel {
     }
     
     func userAuth(activity: AuthViewModel.Activity, username: String, password: String) async throws(ApiError) -> String? {
-        var tokenData = try await networkManager.sendRequest(
+        let tokenData = try await networkManager.sendRequest(
             url: activity == .authorization ? ApiURL.login.rawValue : ApiURL.registration.rawValue,
             method: .post,
             requestData: UserDataOut(username: username, password: password)

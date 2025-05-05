@@ -14,7 +14,6 @@ class AuthViewModel : ObservableObject {
     @Published var password: String = ""
     @Binding var isLogedIn: Bool
     @Published var errorState = ErrorState()
-    @Published var error: ApiError?
     
     var model = AuthModel()
     
