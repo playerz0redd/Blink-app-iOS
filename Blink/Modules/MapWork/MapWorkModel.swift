@@ -17,13 +17,17 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     
     func didReceiveText(text: String) async throws(ApiError) {
         if let data = text.data(using: .utf8) {
-            guard let message: SocketMessage = try Response.parse(from: data) else { return }
+            var message: SocketMessage
+            do {
+                guard let mes: SocketMessage = try Response.parse(from: data) else { return }
+                message = mes
+            } catch {
+                throw ApiError.appError(.encoderError)
+            }
             
             if message.type == .locationUpdate {
                 guard let location: LocationUpdateGet = try Response.parse(from: data) else { return }
-                print("good")
                 DispatchQueue.main.async {
-                    print("обновляю @Published")
                     self.locationUpdate = UserLocation(
                         username: location.username,
                         location: .init(latitude: location.latitude, longitude: location.longitude)

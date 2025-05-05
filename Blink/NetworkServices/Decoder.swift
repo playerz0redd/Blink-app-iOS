@@ -32,7 +32,7 @@ struct Response<ReturnType : Decodable> : Decodable {
             }
             
         } catch {
-            throw .appError(.systemError(error))
+            throw .appError(.systemError)
         }
         return nil
     }

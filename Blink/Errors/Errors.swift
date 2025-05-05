@@ -7,9 +7,9 @@
 
 import Foundation
 
-enum ApiError: Error {
+enum ApiError: Error, Equatable {
     
-    struct ServerError: Error, Decodable {
+    struct ServerError: Error, Decodable, Equatable {
         let code: Int
         let message: String
         
@@ -33,17 +33,33 @@ enum ApiError: Error {
         }
     }
     
-    enum AppError : Error {
-        case invalidUrl(Error)
-        case systemError(Error)
+    enum AppError : Error, Equatable {
+        case invalidUrl
+        case systemError
         case noInternetConnection
         case locationIsNotAllowed
         case encoderError
+        case notAllFieldsFilled
     }
     
     case serverError(ServerError)
     case appError(AppError)
     
+}
+
+struct ErrorState {
+    var errorType: ApiError?
+    var isError = false
+    
+    mutating func setError(error: ApiError) {
+        self.errorType = error
+        self.isError = true
+    }
+    
+    mutating func clearError() {
+        self.errorType = nil
+        self.isError = false
+    }
 }
 
 

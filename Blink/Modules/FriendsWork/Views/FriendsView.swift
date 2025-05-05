@@ -38,17 +38,14 @@ struct FriendsView: View {
             }
         }
         .onAppear {
-            Task {
-                viewModel.friendStatus = .friend
-                try await viewModel.getPeopleList()
-            }
+            viewModel.friendStatus = .friend
+            viewModel.getPeopleList()
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(.leading, 10)
         
         FriendsSectionView(
             viewModel: viewModel,
-            isShowingFriendInfoSheet: $isShowingFriendInfoSheet,
             selectedUser: $selectedUser
         ).transition(.opacity)
         Spacer()
@@ -72,10 +69,8 @@ struct FriendsView: View {
                 .onSubmit({
                     if viewModel.usernameToRequest != "" {
                         withAnimation {
-                            Task {
-                                viewModel.peopleSearch = []
-                                try await viewModel.findPeopleByUsername(username: viewModel.usernameToRequest)
-                            }
+                            viewModel.peopleSearch = []
+                            viewModel.findPeopleByUsername(username: viewModel.usernameToRequest)
                         }
                     }
                 })
@@ -95,11 +90,10 @@ struct FriendsView: View {
                     withAnimation {
                         viewModel.usernameToRequest = ""
                     }
-                    Task {
-                        viewModel.friendStatus = .friend
-                        try await viewModel.getPeopleList()
-                        isFocused = false
-                    }
+                    viewModel.friendStatus = .friend
+                    viewModel.getPeopleList()
+                    isFocused = false
+                
                 } label: {
                     Image(systemName: "xmark.app")
                         .font(.system(size: 50))

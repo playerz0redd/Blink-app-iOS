@@ -12,8 +12,9 @@ import SwiftUI
 class AuthViewModel : ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
-    @Published var isLoading = false
     @Binding var isLogedIn: Bool
+    @Published var errorState = ErrorState()
+    @Published var error: ApiError?
     
     var model = AuthModel()
     
@@ -21,14 +22,22 @@ class AuthViewModel : ObservableObject {
         self._isLogedIn = isLogedIn
     }
     
-    func authefication(activity: Activity) async throws -> Bool {
-        isLoading = true
-        defer {
-            isLoading = false
+    func checkAllFieldsAreFilled() -> Bool {
+        if self.username == "" || self.password == "" {
+            self.errorState.setError(error: ApiError.appError(.notAllFieldsFilled))
+            return false
         }
-        model.username = username
-        model.password = password
-        guard let token = try await model.userAuth(activity: activity) else { return false }
+        return true
+    }
+    
+    func authefication(activity: Activity) async -> Bool {
+        var token: String?
+        do {
+            token = try await model.userAuth(activity: activity, username: self.username, password: self.password)
+        } catch let error {
+            errorState.setError(error: error)
+        }
+        guard let token = token else { return false }
         model.saveUserInfo(username: username, password: password, token: token)
         return true
     }

@@ -116,18 +116,20 @@ struct UserLocation: Identifiable {
     var friendAmount : Int?
     var location: CLLocationCoordinate2D
     var peopleVisited: Int?
+    var status: SearchPerson.Status?
     
     init(username: String, location: CLLocationCoordinate2D) {
         self.username = username
         self.location = location
     }
     
-    init(username: String, friendsSince: Date?, friendAmount: Int, location: CLLocationCoordinate2D, peopleVisited: Int) {
+    init(username: String, friendsSince: Date?, friendAmount: Int, location: CLLocationCoordinate2D, peopleVisited: Int, status: SearchPerson.Status?) {
         self.friendsSince = friendsSince
         self.friendAmount = friendAmount
         self.peopleVisited = peopleVisited
         self.username = username
         self.location = location
+        self.status = status
     }
     
     enum CodingKeys: String, CodingKey {

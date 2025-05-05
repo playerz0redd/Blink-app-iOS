@@ -35,7 +35,7 @@ class NetworkManager2 {
         case put = "PUT"
     }
     
-    private let serverIP = "172.20.10.2:8000"
+    private let serverIP = "192.168.1.103:8000"
     private var delegates: [Delegate] = []
     
     func addDelegate(delegate: Delegate) {
@@ -62,7 +62,7 @@ class NetworkManager2 {
             do {
                 (data, response) = try await URLSession.shared.data(for: request)
             } catch {
-                throw .appError(.systemError(error))
+                throw .appError(.systemError)
             }
             
             if let response = response as? HTTPURLResponse {

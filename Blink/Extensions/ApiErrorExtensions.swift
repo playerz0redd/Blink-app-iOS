@@ -32,14 +32,16 @@ extension ApiError {
                 switch appError {
                 case .invalidUrl:
                     return "Неверный URL"
-                case .systemError(let sysError):
-                    return "Системная ошибка: \(sysError.localizedDescription)"
+                case .systemError:
+                    return "Системная ошибка:"
                 case .noInternetConnection:
                     return "Нет соединения с интернетом"
                 case .locationIsNotAllowed:
                     return "Нет прав для работы с вашей геолокацией"
                 case .encoderError:
                     return "Неизвестная ошибка сервера"
+                case .notAllFieldsFilled:
+                    return "Не все поля заполнены"
                 }
             }
     }

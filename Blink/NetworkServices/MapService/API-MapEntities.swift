@@ -13,6 +13,7 @@ struct Location : Codable {
     var friend_amount: Int
     var people_visited: Int
     var friends_since: Date?
+    var status: SearchPerson.Status?
     var lat: Double
     var lng: Double
 }

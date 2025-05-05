@@ -27,6 +27,13 @@ class UserPageModel {
         return nil
     }
     
+    func changeStatus(with username: String, status: SearchPerson.Status) async throws(ApiError) {
+        if let token = storageManager.getToken() {
+            let url = ApiURL.friends.rawValue + token + "/" + status.rawValue + "/" + username
+            try await networkManager.sendRequest(url: url, method: .put, requestData: NetworkManager2.EmptyRequest())
+        }
+    }
+    
     func getMyUsername() -> String? {
         storageManager.getUsername()
     }

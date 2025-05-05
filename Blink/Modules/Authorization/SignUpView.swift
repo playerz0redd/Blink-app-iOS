@@ -15,8 +15,7 @@ struct SignUpView: View {
     }
     
     var body: some View {
-        Image("log-in-image")
-            .resizable()
+        LinearGradient(colors: [.white, .gray], startPoint: .top, endPoint: .bottom)
             .ignoresSafeArea(.all)
             .scaledToFill()
             .overlay {
@@ -25,26 +24,48 @@ struct SignUpView: View {
                         .font(.largeTitle)
                         .bold()
                         .font(.system(size: 26))
-                        .padding(.bottom, 40)
-                        .foregroundStyle(Color .red)
+                        .padding(.bottom, 30)
+                        .foregroundStyle(Color .black)
 
-                    TextField("  Ваш логин", text: $viewModel.username)
+                    TextField("", text: $viewModel.username, prompt: Text("Логин")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(.gray)
+                    )
+                        .font(.system(size: 18, weight: .medium))
+                        .padding(.leading, 10)
                         .frame(width: 300, height: 50)
-                        .background(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8))
-                            .stroke(Color.gray, lineWidth: 1)
-                            .fill(.pink)
-                            .opacity(0.7))
-
-                    SecureField("  Ваш пароль", text: $viewModel.password)
+                        .foregroundStyle(.white)
+                        .background {
+                            RoundedRectangle(cornerRadius: 22)
+                                .foregroundStyle(.black)
+                        }
+                    
+                    VStack {
+                        SecureField("", text: $viewModel.password, prompt: Text("Пароль")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.gray)
+                        )
+                        .font(.system(size: 18, weight: .medium))
+                        .padding(.leading, 10)
                         .frame(width: 300, height: 50)
-                        .background(RoundedRectangle(cornerSize: CGSize(width: 8, height: 8))
-                            .stroke(Color.gray, lineWidth: 1)
-                            .fill(.pink)
-                            .opacity(0.7))
+                        .foregroundStyle(.white)
+                        .background {
+                            RoundedRectangle(cornerRadius: 22)
+                                .foregroundStyle(.black)
+                        }
+                        if viewModel.errorState.errorType != nil {
+                            Text(viewModel.errorState.errorType == nil ? "" : viewModel.errorState.errorType!.returnErrorMessage())
+                                .foregroundColor(.red)
+                                .font(.system(size: 15, weight: .medium))
+                                .transition(.opacity .combined(with: .scale))
+                                .padding(.top, 10)
+                        }
+                    }.animation(.spring, value: viewModel.errorState.errorType)
                     
                     Button {
+                      guard viewModel.checkAllFieldsAreFilled() else { return }
                         Task {
-                            let isLogedIn = try await viewModel.authefication(activity: .authorization)
+                            let isLogedIn = await viewModel.authefication(activity: .authorization)
                             await MainActor.run {
                                 withAnimation {
                                     viewModel.isLogedIn = isLogedIn
@@ -55,17 +76,18 @@ struct SignUpView: View {
                         Text("Войти")
                             .background(
                                 RoundedRectangle(cornerSize: CGSize(width: 30, height: 30))
-                                    .fill(.yellow)
+                                    .fill(.black)
                                     .frame(width: 200, height: 50)
                             )
                             .font(.system(size: 18, weight: .bold, design: .default))
-                            .foregroundColor(.red)
-                            .padding(.top, 60)
+                            .foregroundColor(.white)
+                            .padding(.top, 30)
                     }
                     
                     Button {
+                        guard viewModel.checkAllFieldsAreFilled() else { return }
                         Task {
-                            let isLogedIn = try await viewModel.authefication(activity: .authorization)
+                            let isLogedIn = await viewModel.authefication(activity: .registration)
                             await MainActor.run {
                                 withAnimation {
                                     viewModel.isLogedIn = isLogedIn
@@ -76,17 +98,19 @@ struct SignUpView: View {
                         Text("Зарегистроваться")
                             .background(
                                 RoundedRectangle(cornerSize: CGSize(width: 30, height: 30))
-                                    .fill(.yellow)
+                                    .fill(.black)
                                     .frame(width: 200, height: 50)
                             )
                             .font(.system(size: 18, weight: .bold, design: .default))
-                            .foregroundColor(.red)
+                            .foregroundColor(.white)
                             .padding(.top, 30)
                     }
 
                     Spacer()
                 }
-                .padding(.top, 130)
+                .padding(.top, 150)
+            }.onChange(of: "\(viewModel.username)\(viewModel.password)") { newValue in
+                viewModel.errorState.clearError()
             }
     }
 }

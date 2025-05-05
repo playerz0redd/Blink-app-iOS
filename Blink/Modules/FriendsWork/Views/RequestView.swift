@@ -38,14 +38,11 @@ struct RequestView: View {
             
             FriendsSectionView(
                 viewModel: viewModel,
-                isShowingFriendInfoSheet: $isShowingFriendInfoSheet,
                 selectedUser: $selectedUser
             )
         }.onAppear() {
-            Task {
-                viewModel.friendStatus = .request
-                try await viewModel.getPeopleList()
-            }
+            viewModel.friendStatus = .request
+            viewModel.getPeopleList()
         }
     }
 }

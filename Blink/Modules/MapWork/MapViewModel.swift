@@ -31,6 +31,7 @@ class MapViewModel : ObservableObject {
     @Published var myUsername: String?
     @Binding var isLogedIn: Bool
     var currentStyleIndex = 0
+    @Published var errorState: ErrorState?
     var myLocation: CLLocationCoordinate2D? {
         locationManager.location
     }
@@ -64,7 +65,8 @@ class MapViewModel : ObservableObject {
                             location: CLLocationCoordinate2D(
                                 latitude: newLocation.location.latitude,
                                 longitude: newLocation.location.longitude
-                            ), peopleVisited: newLocation.peopleVisited ?? 0
+                            ), peopleVisited: newLocation.peopleVisited ?? 0,
+                            status: newLocation.status
                         )
                     }
                     
@@ -82,7 +84,7 @@ class MapViewModel : ObservableObject {
             array.append(UserLocation(username: item.friend_name,
                                       friendsSince: item.friends_since,
                                       friendAmount: item.friend_amount,
-                                      location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng), peopleVisited: item.people_visited))
+                                      location: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lng), peopleVisited: item.people_visited, status: item.status))
         }
         self.friendsLocation = array
     }

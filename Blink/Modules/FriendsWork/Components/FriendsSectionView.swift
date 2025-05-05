@@ -10,7 +10,6 @@ import CoreLocation
 
 struct FriendsSectionView: View {
     @StateObject var viewModel: FriendsViewModel
-    @Binding var isShowingFriendInfoSheet: Bool
     var isPresented = false
     @Binding var selectedUser: String
     var body: some View {
@@ -104,7 +103,10 @@ struct FriendsSectionView: View {
                                 }
                         }
                         
-                    }.padding(.horizontal, 15)
+                    }
+                    .transition(.opacity)
+                    .animation(.easeInOut, value: viewModel.peopleSearch)
+                    .padding(.horizontal, 15)
                 }
                 
                 if viewModel.peopleSearch == [] {
@@ -114,9 +116,15 @@ struct FriendsSectionView: View {
                         .padding(.top, 70)
                 }
             }
-            .sheet(isPresented: $viewModel.isPresented) {
+            .sheet(isPresented: $viewModel.isPresented, onDismiss: {
+                if viewModel.selectedUser == "" {
+                    viewModel.getPeopleList()
+                } else {
+                    viewModel.findPeopleByUsername(username: viewModel.usernameToRequest)
+                }
+            }, content: {
                 PersonSheet(dependency: .init(username: viewModel.selectedUser, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
-            }
+            })
             .sheet(isPresented: $viewModel.isPresentedMessages) {
                 MessagesView(dependency: .init(username: viewModel.selectedUser, networkManager: viewModel.model.networkManager))
             }

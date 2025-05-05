@@ -25,14 +25,67 @@ struct PersonSheet: View {
                 .frame(alignment: .topLeading)
                 .offset(x: -150, y: -350)
             
-            userInfo(username: viewModel.userInfo?.username)
+            //userInfo(username: viewModel.userInfo?.username)
             
         }.overlay {
             VStack {
+                
+                userInfo(username: viewModel.userInfo?.username)
+                
                 Text("📍 \(viewModel.region ?? "")")
                     .offset(y: -40)
-                    .font(.system(size: 18))
-                showOnMapButton
+                    .font(.system(size: 18, weight: .medium))
+                    .padding(.top, 100)
+                
+                if viewModel.userInfo?.username != viewModel.myUsername {
+                    HStack {
+                        if viewModel.userInfo?.status == .friend {
+                            actionButton(
+                                imagePath: "ellipsis.message.fill",
+                                buttonText: "Messages") {
+                                    viewModel.isShowingMessages.toggle()
+                                }
+                            
+                        }
+                        
+                        switch viewModel.userInfo?.status {
+                        case .friend:
+                            actionButton(imagePath: "delete.left.fill", buttonText: "Delete") {
+                                viewModel.changeStatus(status: .unknown)
+                                viewModel.userInfo?.status = .unknown
+                            }.transition(.opacity)
+                        case .request:
+                            HStack {
+                                actionButton(imagePath: "plus.rectangle.fill", buttonText: "Add") {
+                                    viewModel.changeStatus(status: .friend)
+                                    viewModel.userInfo?.status = .friend
+                                }.transition(.opacity)
+                                
+                                actionButton(imagePath: "delete.left.fill", buttonText: "Delete") {
+                                    viewModel.changeStatus(status: .unknown)
+                                    viewModel.userInfo?.status = .unknown
+                                }.transition(.opacity)
+                            }
+                        case .myRequest:
+                            actionButton(imagePath: "delete.left.fill", buttonText: "Delete") {
+                                viewModel.changeStatus(status: .unknown)
+                                viewModel.userInfo?.status = .unknown
+                            }.transition(.opacity)
+                        case .unknown:
+                            actionButton(imagePath: "plus.rectangle.fill", buttonText: "Send request") {
+                                viewModel.changeStatus(status: .request)
+                                viewModel.userInfo?.status = .request
+                            }.transition(.opacity)
+                        default:
+                            EmptyView()
+                        }
+                    }
+                    .animation(.easeInOut, value: viewModel.userInfo?.status)
+                    .padding(.bottom, 40)
+                }
+                
+                
+                //showOnMapButton
                 HStack(spacing: 70) {
                     friendImages(friendAmount: viewModel.userInfo?.friendAmount)
                         .offset(x: -50)
@@ -40,7 +93,7 @@ struct PersonSheet: View {
                 }
                 
                 heartAnimation
-                    .padding(.top, 110)
+                    .padding(.top, 70)
                 if viewModel.userInfo?.friendsSince != nil {
                     Text("дружите с \(viewModel.userInfo?.friendsSince!.getRuDateString() ?? "").")
                         .padding(.top, 30)
@@ -53,11 +106,36 @@ struct PersonSheet: View {
                         .foregroundStyle(.gray)
                 }
                 
-            }.padding(.top, 320)
+            }.padding(.top, 100)
+            .padding(.bottom, 30)
         }
         .presentationDetents([.height(750)])
         .task {
             await viewModel.launch()
+        }.sheet(isPresented: $viewModel.isShowingMessages) {
+            MessagesView(dependency: .init(username: viewModel.userInfo?.username ?? "", networkManager: viewModel.model.networkManager))
+        }
+    }
+    
+    func actionButton(imagePath: String, buttonText: String, completion: @escaping () -> Void) -> some View {
+        Button(action: completion) {
+            HStack(spacing: 10) {
+                Image(systemName: imagePath)
+                    .font(.system(size: 18))
+                    .bold()
+                    .foregroundStyle(.yellow)
+                
+                Text(buttonText)
+                    .font(.system(size: 18))
+                    .bold()
+                    .foregroundStyle(.yellow)
+            }
+            .frame(width: 170, height: 45)
+            .background {
+                RoundedRectangle(cornerRadius: 15)
+                    .fill(.blue)
+                    .opacity(0.7)
+            }
         }
     }
     
@@ -74,7 +152,7 @@ struct PersonSheet: View {
                 .rotationEffect(Angle(degrees: -10))
                 .offset(x: 0, y: 60)
         }
-        .offset(y: -200)
+        //.offset(y: -200)
     }
     
     func friendImages(friendAmount: Int?) -> some View {

@@ -24,7 +24,7 @@ class AuthModel {
         storageService.saveUserInfo(token: token, username: username, password: password)
     }
     
-    func userAuth(activity: AuthViewModel.Activity) async throws -> String? {
+    func userAuth(activity: AuthViewModel.Activity, username: String, password: String) async throws(ApiError) -> String? {
         var tokenData = try await networkManager.sendRequest(
             url: activity == .authorization ? ApiURL.login.rawValue : ApiURL.registration.rawValue,
             method: .post,

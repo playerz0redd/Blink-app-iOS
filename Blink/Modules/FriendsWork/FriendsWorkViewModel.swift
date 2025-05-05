@@ -27,15 +27,19 @@ class FriendsViewModel : ObservableObject {
         try await model.sendFriendRequest(to: self.selectedUser)
     }
     
-    @MainActor func getPeopleList() async throws {
-        self.peopleSearch = try await model.getPeopleByStatusList(status: self.friendStatus)
+    @MainActor func getPeopleList() {
+        Task {
+            self.peopleSearch = try await model.getPeopleByStatusList(status: self.friendStatus)
+        }
     }
     
-    @MainActor func findPeopleByUsername(username: String) async throws {
-        if let people = try await model.findPeopleByUsername(username: username) {
-            self.peopleSearch = people
-        } else {
-            self.peopleSearch = []
+    @MainActor func findPeopleByUsername(username: String) {
+        Task {
+            if let people = try await model.findPeopleByUsername(username: username) {
+                self.peopleSearch = people
+            } else {
+                self.peopleSearch = []
+            }
         }
     }
     
