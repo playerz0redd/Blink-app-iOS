@@ -70,11 +70,22 @@ struct ChatsView: View {
                                                 .opacity(0.5)
                                         }
                                         Spacer()
+                                        if chat.amountOfUnread != 0 {
+                                            Text("\(chat.amountOfUnread)")
+                                                .padding(.horizontal, 10)
+                                                .padding(.vertical, 5)
+                                                .foregroundStyle(.white)
+                                                .font(.system(size: 15, weight: .medium))
+                                                .background {
+                                                    Capsule()
+                                                        .foregroundStyle(.blue)
+                                                }
+                                        }
                                     }
                                     
                                 }.frame(maxWidth: .infinity, alignment: .leading)
                             }
-                        }
+                        }.transition(.opacity)
 
                         Divider()
                             .padding(.leading, 45)
@@ -85,7 +96,7 @@ struct ChatsView: View {
                         .font(.system(size: 30, weight: .medium))
                         .padding(.top, 200)
                 }
-            }
+            }.animation(.easeInOut, value: viewModel.myChats)
         }.padding(.horizontal, 15)
             .padding(.top, 15)
             .task {

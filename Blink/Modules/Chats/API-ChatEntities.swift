@@ -17,11 +17,13 @@ struct ChatItem: Codable, Equatable, Comparable {
     var lastMessage: String?
     var usernameSent: String?
     var timeSent: Date?
+    var amountOfUnread: Int
     
     enum CodingKeys: String, CodingKey {
         case username = "username"
         case lastMessage = "last_message"
         case usernameSent = "username_sent"
         case timeSent = "time_sent"
+        case amountOfUnread = "amount_of_unread"
     }
 }

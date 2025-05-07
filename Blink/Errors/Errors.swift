@@ -40,6 +40,7 @@ enum ApiError: Error, Equatable {
         case locationIsNotAllowed
         case encoderError
         case notAllFieldsFilled
+        case connectionError
     }
     
     case serverError(ServerError)

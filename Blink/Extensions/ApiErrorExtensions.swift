@@ -43,6 +43,8 @@ extension ApiError {
                     return "Системная ошибка"
                 case .notAllFieldsFilled:
                     return "Не все поля заполнены"
+                case .connectionError:
+                    return "Ошибка соединения"
                 }
             }
     }

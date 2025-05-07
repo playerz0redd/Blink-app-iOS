@@ -14,6 +14,8 @@ class SocketMessage: Codable {
     enum MessageType: String, Codable {
         case locationUpdate = "locationUpdate"
         case chatMessage = "chatMessage"
+        case readMessages = "readMessages"
+        case getUpdatedMessages = "getUpdatedMessages"
     }
     
     let type: MessageType?
@@ -157,19 +159,22 @@ class Message: SocketMessage, Hashable {
     var time: Date
     var token: String?
     var usernameTo: String
+    var isRead: Bool
     
-    init(text: String, time: Date, token: String, usernameTo: String) {
+    init(text: String, time: Date, token: String, usernameTo: String, isRead: Bool) {
         self.text = text
         self.time = time
         self.token = token
         self.usernameTo = usernameTo
+        self.isRead = isRead
         super.init(type: .chatMessage)
     }
     
-    init(text: String, time: Date, usernameTo: String) {
+    init(text: String, time: Date, usernameTo: String, isRead: Bool) {
         self.text = text
         self.time = time
         self.usernameTo = usernameTo
+        self.isRead = isRead
         super.init(type: .chatMessage)
     }
     
@@ -179,6 +184,7 @@ class Message: SocketMessage, Hashable {
         case token
         case usernameTo = "username_to"
         case type
+        case isRead
     }
     
     required init(from decoder: Decoder) throws {
@@ -187,6 +193,7 @@ class Message: SocketMessage, Hashable {
         text = try container.decode(String.self, forKey: .text)
         time = try container.decode(Date.self, forKey: .time)
         usernameTo = try container.decode(String.self, forKey: .usernameTo)
+        isRead = try container.decode(Bool.self, forKey: .isRead)
         try super.init(from: decoder)
     }
     
@@ -197,5 +204,36 @@ class Message: SocketMessage, Hashable {
         try container.encode(time, forKey: .time)
         try container.encode(usernameTo, forKey: .usernameTo)
         try container.encode(type, forKey: .type)
+        try container.encode(isRead, forKey: .isRead)
     }
+}
+
+class ReadMessages: SocketMessage {
+    let token: String
+    let usernameTo: String
+    
+    init(token: String, usernameTo: String) {
+        self.token = token
+        self.usernameTo = usernameTo
+        super.init(type: .readMessages)
+    }
+    
+    required init(from decoder: any Decoder) throws {
+        fatalError("init(from:) has not been implemented")
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case token
+        case usernameTo = "username_to"
+        case type
+    }
+    
+    override func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(token, forKey: .token)
+        try container.encode(usernameTo, forKey: .usernameTo)
+        try container.encode(type, forKey: .type)
+    }
+    
+    
 }

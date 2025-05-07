@@ -25,7 +25,7 @@ class MessagesViewModel: ObservableObject {
     var myUsername: String
     @Published var messageSet: Set<UUID> = []
     
-    init(dependency: MessagesDependency) {
+    @MainActor init(dependency: MessagesDependency) {
         self.chatWithUsername = dependency.username
         self.model = .init(networkManager: dependency.networkManager)
         self.myUsername = model.getMyUsername() ?? ""
@@ -35,8 +35,20 @@ class MessagesViewModel: ObservableObject {
                 .compactMap { $0 }
                 .sink { [weak self] newMessage in
                     if let self = self {
+                        self.readMessages()
                         messages?.append(newMessage)
                     }
+                }
+                .store(in: &cancellables)
+            model.$updateMessages
+                .compactMap { $0 }
+                .sink { [weak self] _ in
+                    if let self = self {
+                        messages?.forEach({ message in
+                            message.isRead = true
+                        })
+                    }
+                    self?.objectWillChange.send()
                 }
                 .store(in: &cancellables)
         }
@@ -44,10 +56,26 @@ class MessagesViewModel: ObservableObject {
     
     @MainActor func sendMessage() {
         self.messageText = String(self.messageText.trimmingPrefix(while: \.isWhitespace))
+            for i in stride(from: 0, to: self.messageText.count, by: 500) {
+                let startIndex = self.messageText.index(self.messageText.startIndex, offsetBy: i)
+                let endIndex = self.messageText.index(
+                    startIndex,
+                    offsetBy: 500,
+                    limitedBy: self.messageText.endIndex
+                ) ?? self.messageText.endIndex
+                
+                let message = String(self.messageText[startIndex..<endIndex])
+            Task {
+                try await model.sendMessage(text: message, to: chatWithUsername)
+                self.messages?.append(.init(text: message, time: Date.now, usernameTo: chatWithUsername, isRead: false))
+            }
+        }
+        self.messageText = ""
+    }
+    
+    func readMessages() {
         Task {
-            try await model.sendMessage(text: messageText, to: chatWithUsername)
-            self.messages?.append(.init(text: messageText, time: Date.now, usernameTo: chatWithUsername))
-            self.messageText = ""
+            try await model.readMessages(with: self.chatWithUsername)
         }
     }
     

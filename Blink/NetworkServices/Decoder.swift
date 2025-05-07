@@ -19,7 +19,6 @@ struct Response<ReturnType : Decodable> : Decodable {
         decoder.dateDecodingStrategy = .formatted(formatter)
         
         do {
-            print(ReturnType.self)
             let convertedData = try decoder.decode(Response.self, from: data)
             
             if let data = convertedData.data {

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MessagesView: View {
     @StateObject var viewModel: MessagesViewModel
+    @FocusState var isKeybordFocused: Bool
     
     init(dependency: MessagesDependency) {
         _viewModel = .init(wrappedValue: .init(
@@ -70,12 +71,17 @@ struct MessagesView: View {
                         HStack(spacing: 7) {
                             Text(message.text.insertLineBreaks(every: 20))
                                 .padding(.leading, 10)
+                            HStack(spacing: 2) {
+                                Text(message.time.getHourAndMinutes())
+                                    .font(.system(size: 10))
+                                    .opacity(0.5)
+                                    .padding(.top, message.text.getPadding())
+                                
+                                isReadMessageView(message: message)
+                                    .opacity(0.5)
+                                    .padding(.top, message.text.getPadding())
+                            }.padding(.trailing, 3)
                             
-                            Text(message.time.getHourAndMinutes())
-                                .font(.system(size: 10))
-                                .opacity(0.5)
-                                .padding(.top, message.text.getPadding())
-                                .padding(.trailing, 3)
                             
                         }.padding(.all, 5)
                         
@@ -101,6 +107,7 @@ struct MessagesView: View {
                     .padding(.bottom, 7)
             }
             .onChange(of: viewModel.messages?.last?.id) { id in
+                viewModel.readMessages()
                 viewModel.getSetOfMessagesWithDate()
                 if let id = id {
                     withAnimation {
@@ -110,6 +117,25 @@ struct MessagesView: View {
             }
         }
         
+    }
+    
+    func isReadMessageView(message: Message) -> some View {
+        HStack {
+            if message.usernameTo != viewModel.myUsername {
+                if !message.isRead {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .medium))
+                } else {
+                    ZStack {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 11, weight: .medium))
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 11, weight: .medium))
+                            .offset(x: 3)
+                    }
+                }
+            }
+        }
     }
     
     func datePlaceholder(index: Int, message: Message?) -> some View {
@@ -134,13 +160,12 @@ struct MessagesView: View {
         }
     }
     
-    
-    
     var messageTextField: some View {
         HStack {
             TextField("", text: $viewModel.messageText, prompt: Text("Message")
                 .foregroundStyle(Color.primary.opacity(0.5))
             )
+            .focused($isKeybordFocused)
             .padding(.leading, 10)
             .background {
                 RoundedRectangle(cornerRadius: 17)
@@ -163,6 +188,7 @@ struct MessagesView: View {
             if viewModel.isPresentedSendButton {
                 Button {
                     viewModel.sendMessage()
+                    isKeybordFocused = false
                 } label: {
                     Image(systemName: "arrowshape.up.circle.fill")
                         .foregroundStyle(Color.blue)

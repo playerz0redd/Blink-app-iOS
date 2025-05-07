@@ -9,6 +9,9 @@ import Foundation
 
 struct SearchPerson : Codable, Hashable, Equatable {
     
+    var username : String
+    var status : Status
+    
     enum Status : String, Codable {
         case friend = "friend"
         case request = "request"
@@ -16,7 +19,4 @@ struct SearchPerson : Codable, Hashable, Equatable {
         case myRequest = "my_request"
         case unknown = "unknown"
     }
-    
-    var username : String
-    var status : Status
 }

@@ -13,6 +13,7 @@ class MessagesModel: WebSocketDelegate {
     let networkManager: NetworkManager2
     private let storageManager = StorageService()
     @Published var newMessage: Message?
+    @Published var updateMessages = false
     
     init(networkManager: NetworkManager2) {
         self.networkManager = networkManager
@@ -21,7 +22,7 @@ class MessagesModel: WebSocketDelegate {
     
     func sendMessage(text: String, to username: String) async throws {
         if let token = storageManager.getToken() {
-            let message: Message = .init(text: text, time: Date.now, token: token, usernameTo: username)
+            let message: Message = .init(text: text, time: Date.now, token: token, usernameTo: username, isRead: false)
             try await networkManager.sendDataSocket(data: message)
         }
     }
@@ -36,6 +37,15 @@ class MessagesModel: WebSocketDelegate {
         return nil
     }
     
+    func readMessages(with username: String) async throws(ApiError) {
+        if let token = storageManager.getToken() {
+            try await networkManager.sendDataSocket(data: ReadMessages(
+                token: token,
+                usernameTo: username
+            ))
+        }
+    }
+    
     func didReceiveText(text: String) async throws(ApiError) {
         if let data = text.data(using: .utf8) {
             guard let messageType: SocketMessage = try Response.parse(from: data) else { return }
@@ -45,7 +55,16 @@ class MessagesModel: WebSocketDelegate {
                 print("good")
                 DispatchQueue.main.async {
                     print("------------обновляю @Published")
-                    self.newMessage = Message(text: message.text, time: message.time, usernameTo: message.usernameTo)
+                    self.newMessage = Message(text: message.text, time: message.time, usernameTo: message.usernameTo, isRead: message.isRead)
+                }
+            }
+            
+            if messageType.type == .getUpdatedMessages {
+                //guard let messages: [Message] = try Response.parse(from: data) else { return }
+                print("good")
+                DispatchQueue.main.async {
+                    print("++++++++обновляю @Published")
+                    self.updateMessages.toggle()
                 }
             }
         }
