@@ -8,10 +8,10 @@
 import Foundation
 
 class UserPageModel {
-    let networkManager: NetworkManager2
+    let networkManager: NetworkManager
     let storageManager = StorageService()
     
-    init(networkManager: NetworkManager2) {
+    init(networkManager: NetworkManager) {
         self.networkManager = networkManager
     }
     
@@ -20,7 +20,7 @@ class UserPageModel {
             let data = try await networkManager.sendRequest(
                 url: "\(ApiURL.userInfo.rawValue)\(token)/\(username)",
                 method: .get,
-                requestData: NetworkManager2.EmptyRequest()
+                requestData: NetworkManager.EmptyRequest()
             )
             return try Response<Location>.parse(from: data!)
         }
@@ -30,7 +30,7 @@ class UserPageModel {
     func changeStatus(with username: String, status: SearchPerson.Status) async throws(ApiError) {
         if let token = storageManager.getToken() {
             let url = ApiURL.friends.rawValue + token + "/" + status.rawValue + "/" + username
-            try await networkManager.sendRequest(url: url, method: .put, requestData: NetworkManager2.EmptyRequest())
+            try await networkManager.sendRequest(url: url, method: .put, requestData: NetworkManager.EmptyRequest())
         }
     }
     

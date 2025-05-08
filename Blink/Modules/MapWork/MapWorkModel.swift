@@ -11,7 +11,7 @@ import SwiftUI
 class MapWorkModel: WebSocketDelegate, ObservableObject {
 
     private let storageService = StorageService()
-    let networkManager : NetworkManager2
+    let networkManager : NetworkManager
     @Published var locationUpdate: UserLocation?
     private let healthManager = HealthManager()
     
@@ -31,7 +31,7 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
         }
     }
     
-    init(networkManager: NetworkManager2) {
+    init(networkManager: NetworkManager) {
         self.networkManager = networkManager
         self.networkManager.addDelegate(delegate: .init(delegate: self))
         Task {
@@ -42,7 +42,7 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
     func getFriendsLocation() async throws(ApiError) -> [Location]? {
         if let token = storageService.getToken() {
             let url = ApiURL.friendsLocation.rawValue + token
-            let data = try await networkManager.sendRequest(url: url, method: .get, requestData: NetworkManager2.EmptyRequest())
+            let data = try await networkManager.sendRequest(url: url, method: .get, requestData: NetworkManager.EmptyRequest())
             return try Response<[Location]>.parse(from: data!)
         }
         return nil
@@ -55,11 +55,11 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
         }
     }
     
-    func getPeopleVisited(name: String, method: NetworkManager2.RequestMethod) async throws(ApiError) -> Int {
+    func getPeopleVisited(name: String, method: NetworkManager.RequestMethod) async throws(ApiError) -> Int {
         let data = try await networkManager.sendRequest(
             url: ApiURL.peopleVisited.rawValue + name,
             method: method,
-            requestData: NetworkManager2.EmptyRequest()
+            requestData: NetworkManager.EmptyRequest()
         )
         
         guard let data = data else { return 0 }

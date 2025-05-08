@@ -19,7 +19,7 @@ enum UserPageViewAction {
 struct UserPageDependency {
     let username: String
     let onTerminate: (UserPageTerminationAction?) -> Void
-    let networkManager: NetworkManager2
+    let networkManager: NetworkManager
 }
 
 final class UserPageViewModel: ObservableObject {

@@ -18,8 +18,9 @@ class FriendsViewModel : ObservableObject {
     @Published var selectedUser: String = ""
     @Published var isPresented = false
     @Published var isPresentedMessages = false
+    @Published var viewState: ViewState = .loading
     
-    init(networkManager: NetworkManager2) {
+    init(networkManager: NetworkManager) {
         self.model = .init(networkManager: networkManager)
     }
     
@@ -28,8 +29,15 @@ class FriendsViewModel : ObservableObject {
     }
     
     @MainActor func getPeopleList() {
+        self.viewState = .loading
         Task {
-            self.peopleSearch = try await model.getPeopleByStatusList(status: self.friendStatus)
+            do {
+                self.peopleSearch = try await model.getPeopleByStatusList(status: self.friendStatus)
+            } catch let error as ApiError {
+                self.viewState = .error(error)
+                return
+            }
+            self.viewState = .success
         }
     }
     

@@ -10,7 +10,7 @@ import Foundation
 
 class AuthModel {
     
-    private var networkManager = NetworkManager2()
+    private var networkManager = NetworkManager()
     private var storageService = StorageService()
     
     func getToken() -> String? {

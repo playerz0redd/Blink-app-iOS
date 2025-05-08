@@ -10,7 +10,7 @@ import Combine
 
 struct MessagesDependency {
     var username: String
-    var networkManager: NetworkManager2
+    var networkManager: NetworkManager
 }
 
 

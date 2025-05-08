@@ -8,7 +8,7 @@
 import Foundation
 
 struct ChatDependency {
-    var networkManager: NetworkManager2
+    var networkManager: NetworkManager
 }
 
 class ChatsViewModel: FriendsViewModel {

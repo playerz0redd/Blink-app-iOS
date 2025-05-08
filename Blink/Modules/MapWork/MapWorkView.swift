@@ -13,7 +13,7 @@ struct MapView: View {
     @StateObject var viewModel: MapViewModel
     
     init(isLogedIn: Binding<Bool>) {
-        self._viewModel = .init(wrappedValue: .init(model: .init(networkManager: NetworkManager2()), isLogedIn: isLogedIn))
+        self._viewModel = .init(wrappedValue: .init(model: .init(networkManager: NetworkManager()), isLogedIn: isLogedIn))
     }
     
     var body: some View {

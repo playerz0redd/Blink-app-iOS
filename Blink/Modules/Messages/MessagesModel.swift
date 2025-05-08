@@ -10,12 +10,12 @@ import SwiftUI
 
 class MessagesModel: WebSocketDelegate {
     
-    let networkManager: NetworkManager2
+    let networkManager: NetworkManager
     private let storageManager = StorageService()
     @Published var newMessage: Message?
     @Published var updateMessages = false
     
-    init(networkManager: NetworkManager2) {
+    init(networkManager: NetworkManager) {
         self.networkManager = networkManager
         self.networkManager.addDelegate(delegate: .init(delegate: self))
     }
@@ -30,7 +30,7 @@ class MessagesModel: WebSocketDelegate {
     func getMessagesOfChat(with username: String) async throws -> [Message]? {
         if let token = storageManager.getToken() {
             let url = ApiURL.chatItems.rawValue + token + "/" + username
-            if let data = try await networkManager.sendRequest(url: url, method: .get, requestData: NetworkManager2.EmptyRequest()) {
+            if let data = try await networkManager.sendRequest(url: url, method: .get, requestData: NetworkManager.EmptyRequest()) {
                 return try Response<[Message]>.parse(from: data)
             }
         }

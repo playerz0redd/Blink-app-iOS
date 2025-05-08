@@ -24,7 +24,7 @@ struct Delegate {
 
 //MARK: - Class
 
-class NetworkManager2 {
+class NetworkManager {
     
     private var webSocketTask: URLSessionWebSocketTask?
     private var dispatchTimer: DispatchSourceTimer?

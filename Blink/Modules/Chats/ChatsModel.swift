@@ -8,10 +8,10 @@
 import Foundation
 
 class ChatsModel {
-    let networkManager: NetworkManager2
+    let networkManager: NetworkManager
     private let storageManager = StorageService()
     
-    init(networkManager: NetworkManager2) {
+    init(networkManager: NetworkManager) {
         self.networkManager = networkManager
     }
     
@@ -20,7 +20,7 @@ class ChatsModel {
             guard let data = try await networkManager.sendRequest(
                 url: "\(ApiURL.chatItems.rawValue)\(token)",
                 method: .get,
-                requestData: NetworkManager2.EmptyRequest()
+                requestData: NetworkManager.EmptyRequest()
             ) else { return nil }
             
             if let chatItems = try Response<[ChatItem]>.parse(from: data) {
