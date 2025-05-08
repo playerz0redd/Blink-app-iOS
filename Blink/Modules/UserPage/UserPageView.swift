@@ -30,7 +30,7 @@ struct PersonSheet: View {
                 }
                 .transition(.opacity)
             case .error(let apiError):
-                Text("Ошибка")
+                Text("Ошибка загрузки данных")
                     .font(.system(size: 23, weight: .medium))
                     .foregroundStyle(.black)
                     .transition(.opacity)

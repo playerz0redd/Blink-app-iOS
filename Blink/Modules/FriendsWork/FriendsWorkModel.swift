@@ -9,7 +9,6 @@ import Foundation
 
 class FriendsWorkModel {
     private let storageService = StorageService()
-    private let mapNetworkService = FriendService()
     let networkManager: NetworkManager2
     
     init(networkManager: NetworkManager2) {
