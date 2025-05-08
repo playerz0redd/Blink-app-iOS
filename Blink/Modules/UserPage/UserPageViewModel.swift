@@ -31,6 +31,8 @@ final class UserPageViewModel: ObservableObject {
     @Published var userInfo: UserLocation?
     @Published var region: String?
     @Published var isShowingMessages = false
+    @Published var errorState = ErrorState()
+    @Published var viewState: ViewState = .loading
     
     init(
         dependency: UserPageDependency
@@ -41,27 +43,35 @@ final class UserPageViewModel: ObservableObject {
     
     @MainActor
     func launch() async {
-        guard let userData = try? await model.getUserInfo(
-            username: dependency.username
-        ) else { return }
-        
-        self.userInfo = .init(
-            username: userData.friend_name,
-            friendsSince: userData.friends_since,
-            friendAmount: userData.friend_amount,
-            location: .init(latitude: userData.lat,
-                            longitude: userData.lng),
-            peopleVisited: userData.people_visited,
-            status: userData.status
-        )
-        
+        self.viewState = .loading
+        do {
+            guard let userData = try await model.getUserInfo(
+                username: dependency.username
+            ) else { return }
+            
+            self.userInfo = .init(
+                username: userData.friend_name,
+                friendsSince: userData.friends_since,
+                friendAmount: userData.friend_amount,
+                location: .init(latitude: userData.lat,
+                                longitude: userData.lng),
+                peopleVisited: userData.people_visited,
+                status: userData.status
+            )
+        } catch let error {
+            self.errorState.setError(error: error)
+            self.viewState = .error(error)
+            return
+        }
+        self.viewState = .success
         self.myUsername = model.getMyUsername()
         Task {
-            try await self.region = userInfo?.location.getCity()
+            try? await self.region = userInfo?.location.getCity()
         }
     }
     
-    @MainActor func changeStatus(status: SearchPerson.Status) {
+    @MainActor
+    func changeStatus(status: SearchPerson.Status) {
         Task {
             try await model.changeStatus(with: self.userInfo!.username, status: status)
         }

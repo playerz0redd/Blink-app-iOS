@@ -71,16 +71,18 @@ struct MessagesView: View {
                         HStack(spacing: 7) {
                             Text(message.text.insertLineBreaks(every: 20))
                                 .padding(.leading, 10)
-                            HStack(spacing: 2) {
-                                Text(message.time.getHourAndMinutes())
-                                    .font(.system(size: 10))
-                                    .opacity(0.5)
-                                    .padding(.top, message.text.getPadding())
+                            VStack {
+                                Spacer()
                                 
-                                isReadMessageView(message: message)
-                                    .opacity(0.5)
-                                    .padding(.top, message.text.getPadding())
-                            }.padding(.trailing, 3)
+                                HStack(spacing: 2) {
+                                    Text(message.time.getHourAndMinutes())
+                                        .font(.system(size: 10))
+                                    
+                                    isReadMessageView(message: message)
+                                }
+                                .padding(.trailing, 3)
+                                .opacity(0.5)
+                            }
                             
                             
                         }.padding(.all, 5)

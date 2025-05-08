@@ -33,7 +33,4 @@ extension String {
         }.joined(separator: "\n")
     }
     
-    func getPadding() -> Double {
-        Double(((self.count / 20 + 1) + self.filter({$0 == "\n"}).count) * 14)
-    }
 }
