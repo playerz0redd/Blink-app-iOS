@@ -24,6 +24,7 @@ class MessagesViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     var myUsername: String
     @Published var messageSet: Set<UUID> = []
+    @Published var viewState: ViewState = .loading
     
     @MainActor init(dependency: MessagesDependency) {
         self.chatWithUsername = dependency.username
@@ -80,8 +81,15 @@ class MessagesViewModel: ObservableObject {
     }
     
     @MainActor func getChatMessages() {
+        self.viewState = .loading
         Task {
-            self.messages = try await model.getMessagesOfChat(with: self.chatWithUsername)
+            do {
+                self.messages = try await model.getMessagesOfChat(with: self.chatWithUsername)
+            } catch let error as ApiError {
+                self.viewState = .error(error)
+                return
+            }
+            self.viewState = .success
         }
     }
     
@@ -96,7 +104,7 @@ class MessagesViewModel: ObservableObject {
                 messageSet.insert(message.id)
             }
         }
-        self.messageSet =  messageSet
+        self.messageSet = messageSet
         
     }
 }

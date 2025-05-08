@@ -97,8 +97,6 @@ struct PersonSheet: View {
                             .padding(.bottom, 40)
                         }
                         
-                        
-                        //showOnMapButton
                         HStack(spacing: 70) {
                             friendImages(friendAmount: viewModel.userInfo?.friendAmount)
                                 .offset(x: -50)
@@ -107,7 +105,7 @@ struct PersonSheet: View {
                         
                         heartAnimation
                             .padding(.top, 70)
-                        if viewModel.userInfo?.friendsSince != nil {
+                        if viewModel.userInfo?.status == .friend {
                             Text("дружите с \(viewModel.userInfo?.friendsSince!.getRuDateString() ?? "").")
                                 .padding(.top, 30)
                                 .foregroundStyle(.gray)
@@ -119,10 +117,10 @@ struct PersonSheet: View {
                                 .foregroundStyle(.gray)
                         }
                         
-                    }.padding(.top, 100)
-                        .padding(.bottom, 30)
+                    }
+                    .padding(.top, 100)
+                    .padding(.bottom, 30)
                 }
-                //.presentationDetents([.height(750)])
                 .sheet(isPresented: $viewModel.isShowingMessages) {
                     MessagesView(dependency: .init(username: viewModel.userInfo?.username ?? "", networkManager: viewModel.model.networkManager))
                 }
@@ -169,7 +167,6 @@ struct PersonSheet: View {
                 .rotationEffect(Angle(degrees: -10))
                 .offset(x: 0, y: 60)
         }
-        //.offset(y: -200)
     }
     
     func friendImages(friendAmount: Int?) -> some View {

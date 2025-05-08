@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MessagesView: View {
     @StateObject var viewModel: MessagesViewModel
-    @FocusState var isKeybordFocused: Bool
     
     init(dependency: MessagesDependency) {
         _viewModel = .init(wrappedValue: .init(
@@ -33,21 +32,44 @@ struct MessagesView: View {
                 }
             }
             
-            messagesList
-                .padding(.bottom, 8)
-            
-            
-            messageTextField
-            
+            switch viewModel.viewState {
+            case .loading:
+                ProgressView {
+                    Text("Загрузка")
+                        .font(.system(size: 23, weight: .medium))
+                        .foregroundStyle(.black)
+                }
+                .padding(.top, 140)
+                .transition(.opacity)
+            case .error(let apiError):
+                Text("\(apiError.returnErrorMessage())")
+                    .font(.system(size: 23, weight: .medium))
+                    .foregroundStyle(.black)
+                    .transition(.opacity)
+                    .padding(.top, 140)
+            case .success:
+                VStack {
+                    
+                    messagesList
+                        .padding(.bottom, 8)
+                    
+                    
+                    messageTextField
+                    
+                }
+                .transition(.opacity)
+                .padding(.horizontal, 7)
+                .sheet(isPresented: $viewModel.isUserPagePresented) {
+                    PersonSheet(dependency: .init(username: viewModel.chatWithUsername, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
+                }
+            }
+            Spacer()
         }
-        .padding(.horizontal, 7)
-        .padding(.top, 20)
         .onAppear {
             viewModel.getChatMessages()
         }
-        .sheet(isPresented: $viewModel.isUserPagePresented) {
-            PersonSheet(dependency: .init(username: viewModel.chatWithUsername, onTerminate: {action in }, networkManager: viewModel.model.networkManager))
-        }
+        .padding(.top, 15)
+        .animation(.easeInOut(duration: 0.5), value: viewModel.viewState)
     }
     
     var messagesList: some View {
@@ -108,6 +130,11 @@ struct MessagesView: View {
                 }.animation(.easeIn, value: viewModel.messages)
                     .padding(.bottom, 7)
             }
+            .onAppear {
+                viewModel.readMessages()
+                viewModel.getSetOfMessagesWithDate()
+            }
+            .defaultScrollAnchor(.bottom)
             .onChange(of: viewModel.messages?.last?.id) { id in
                 viewModel.readMessages()
                 viewModel.getSetOfMessagesWithDate()
@@ -167,7 +194,6 @@ struct MessagesView: View {
             TextField("", text: $viewModel.messageText, prompt: Text("Message")
                 .foregroundStyle(Color.primary.opacity(0.5))
             )
-            .focused($isKeybordFocused)
             .padding(.leading, 10)
             .background {
                 RoundedRectangle(cornerRadius: 17)
@@ -190,7 +216,6 @@ struct MessagesView: View {
             if viewModel.isPresentedSendButton {
                 Button {
                     viewModel.sendMessage()
-                    isKeybordFocused = false
                 } label: {
                     Image(systemName: "arrowshape.up.circle.fill")
                         .foregroundStyle(Color.blue)
