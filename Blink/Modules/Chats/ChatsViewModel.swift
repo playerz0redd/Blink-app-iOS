@@ -24,7 +24,13 @@ class ChatsViewModel: FriendsViewModel {
     
     @MainActor func getMyChats() {
         Task {
-            self.myChats = try await chatModel.getMyChats()
+            self.viewState = .loading
+            do {
+                self.myChats = try await chatModel.getMyChats()
+            } catch let error as ApiError {
+                self.viewState = .error(error)
+                return
+            }
             if var chats = self.myChats {
                 self.myChats = self.myChats?.sorted(by: { ($0.timeSent ?? .distantPast) > ($1.timeSent ?? .distantPast)})
                 chats = self.myChats!
@@ -36,6 +42,7 @@ class ChatsViewModel: FriendsViewModel {
                     
                 }
             }
+            self.viewState = .success
         }
     }
 }
