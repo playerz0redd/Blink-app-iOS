@@ -15,7 +15,7 @@ class ChatsViewModel: FriendsViewModel {
     @Published var myChats: [ChatItem]?
     @Published var isPresentedChat = false
     let chatModel: ChatsModel
-    let maxMessageSize = 20
+    private let maxMessageSize = 20
     
     init(dependency: ChatDependency) {
         self.chatModel = .init(networkManager: dependency.networkManager)

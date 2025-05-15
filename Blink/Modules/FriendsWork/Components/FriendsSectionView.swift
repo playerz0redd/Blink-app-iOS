@@ -33,7 +33,7 @@ struct FriendsSectionView: View {
                         switch friend.status {
                         case .friend:
                             HStack(spacing: 27) {
-                                Text("friends")
+                                Text("друзья")
                                     .bold()
                                     .foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing))
                                 
@@ -71,11 +71,11 @@ struct FriendsSectionView: View {
                             }
                             
                         case .block:
-                            Text("blocked")
+                            Text("заблокирован")
                                 .bold()
                         case .myRequest:
                             HStack(spacing: 27) {
-                                Text("sent")
+                                Text("запрос")
                                     .bold()
                                     .foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing))
                                 
@@ -110,7 +110,7 @@ struct FriendsSectionView: View {
                 }
                 
                 if viewModel.peopleSearch == [] {
-                    Text("we're not even sure\nwho to recommend...")
+                    Text("никто не найден...")
                         .font(.title)
                         .bold()
                         .padding(.top, 70)

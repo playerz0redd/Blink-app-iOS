@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CustomTabView: View {
-    @State private var selectedTab = "FRIENDS"
-    private let tabNames = ["FRIENDS", "REQUESTS"]
+    @State private var selectedTab = "ДРУЗЬЯ"
+    private let tabNames = ["ДРУЗЬЯ", "ПРИГЛАШЕНИЯ"]
     @Namespace var animation
     @Binding var isShowingFriendInfoSheet: Bool
     @Binding var selectedUser: String
@@ -59,9 +59,9 @@ struct CustomTabView: View {
             
             Group {
                 switch selectedTab {
-                case "FRIENDS":
+                case "ДРУЗЬЯ":
                     FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser, networkManager: networkManager)
-                case "REQUESTS":
+                case "ПРИГЛАШЕНИЯ":
                     RequestView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser, networkManager: networkManager)
                 default:
                     FriendsView(isShowingFriendInfoSheet: $isShowingFriendInfoSheet, selectedUser: $selectedUser, networkManager: networkManager)

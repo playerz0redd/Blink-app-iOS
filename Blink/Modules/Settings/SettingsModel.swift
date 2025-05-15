@@ -13,4 +13,12 @@ class SettingsModel {
     func logout() {
         storageManager.deleteUser()
     }
+    
+    func saveMapStyle(mapStyle: Any) {
+        storageManager.saveMapStyle(mapStyle: mapStyle)
+    }
+    
+    func getMapStyle() -> Any? {
+        storageManager.getMapStyle()
+    }
 }

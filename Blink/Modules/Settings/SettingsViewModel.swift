@@ -39,5 +39,13 @@ class SettingsViewModel: ObservableObject {
         model.logout()
     }
     
+    func saveMapStyle() {
+        model.saveMapStyle(mapStyle: self.mapStyle as Any)
+    }
+    
+    func getMapStyle() {
+        self.mapStyle = (model.getMapStyle() ?? MapStyle.standard) as! MapStyle
+    }
+    
     
 }

@@ -33,7 +33,7 @@ struct ChatsView: View {
                     .transition(.opacity)
             case .success:
                 VStack {
-                    Text("all chats")
+                    Text("все чаты")
                         .bold()
                         .font(.system(size: 30))
                         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -61,7 +61,7 @@ struct ChatsView: View {
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                     .padding(.bottom, 1)
                                                 
-                                                Text("\(chat.lastMessage ?? "no messages yet")")
+                                                Text("\(chat.lastMessage ?? "сообщений еще нет...")")
                                                     .foregroundStyle(Color.black)
                                                     .font(.system(size: 15))
                                                     .opacity(0.6)
@@ -100,11 +100,15 @@ struct ChatsView: View {
                                 
                             }
                         } else {
-                            Text("Chats not found")
+                            Text("Чаты не найдены")
                                 .font(.system(size: 30, weight: .medium))
                                 .padding(.top, 200)
                         }
-                    }.animation(.easeInOut, value: viewModel.myChats)
+                    }
+                    .refreshable {
+                        viewModel.getMyChats()
+                    }
+                    .animation(.easeInOut, value: viewModel.myChats)
                 }
                 .padding(.horizontal, 15)
                 .padding(.top, 15)

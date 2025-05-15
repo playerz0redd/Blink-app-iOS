@@ -44,7 +44,7 @@ struct FriendsView: View {
                 VStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(viewModel.usernameToRequest == "" ? "all friends " : "people found ")
+                            Text(viewModel.usernameToRequest == "" ? "все друзья " : "люди найдены ")
                                 .bold()
                                 .font(.largeTitle)
                             +
@@ -70,6 +70,13 @@ struct FriendsView: View {
                 }.transition(.opacity)
             }
         }
+        .refreshable {
+            if viewModel.usernameToRequest == "" {
+                viewModel.getPeopleList()
+            } else {
+                viewModel.findPeopleByUsername(username: viewModel.usernameToRequest)
+            }
+        }
         .animation(.easeInOut(duration: 0.5), value: viewModel.viewState)
         .onAppear {
             viewModel.friendStatus = .friend
@@ -80,7 +87,7 @@ struct FriendsView: View {
     
     var searchField: some View {
         HStack(spacing: 5) {
-            TextField("", text: $viewModel.usernameToRequest, prompt: Text("search").bold().font(.system(size: 25)))
+            TextField("", text: $viewModel.usernameToRequest, prompt: Text("поиск").bold().font(.system(size: 25)))
                 .bold()
                 .font(.system(size: 20))
                 .padding(.leading, 16)

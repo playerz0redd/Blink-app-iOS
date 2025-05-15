@@ -19,20 +19,20 @@ struct SettingsView: View {
     
     var body: some View {
         VStack(spacing: 50) {
-            Text("Settings")
+            Text("Настройки")
                 .foregroundStyle(.black)
                 .font(.system(size: 30, weight: .medium))
                 .padding(.top, 0)
             VStack(spacing: 30) {
-                Text("Choose map style")
+                Text("Выбор стиля карты")
                     .foregroundStyle(.black)
                     .font(.system(size: 30, weight: .medium))
                     .padding(0)
                 
                 HStack(spacing: 0) {
-                    styleButton(styleName: "standart", index: 0, style: .standard)
-                    styleButton(styleName: "hybrid", index: 1, style: .hybrid)
-                    styleButton(styleName: "imagery", index: 2, style: .imagery)
+                    styleButton(styleName: "стандарт", index: 0, style: .standard)
+                    styleButton(styleName: "гибрид", index: 1, style: .hybrid)
+                    styleButton(styleName: "спутник", index: 2, style: .imagery)
                 }
                 .background {
                     RoundedRectangle(cornerRadius: 24)
@@ -54,7 +54,7 @@ struct SettingsView: View {
                     }
                 }
             } label: {
-                Text("Exit")
+                Text("Выход из аккаунта")
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(Color.red)
                     .frame(maxWidth: .infinity)

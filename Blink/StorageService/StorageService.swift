@@ -20,6 +20,14 @@ class StorageService {
         storage.string(forKey: "token")
     }
     
+    func saveMapStyle(mapStyle: Any) {
+        storage.set(mapStyle, forKey: "mapStyle")
+    }
+    
+    func getMapStyle() -> Any? {
+        storage.object(forKey: "mapStyle")
+    }
+    
     func getUsername() -> String? {
         return storage.string(forKey: "username")
     }

@@ -147,7 +147,7 @@ class MapViewModel : ObservableObject {
         case 0.02..<0.5: self.place = await (try? region.getRegion()) ?? ""
         case 0.5..<5: self.place = await (try? region.getArea()) ?? ""
         case 5..<30: self.place = await (try? region.getCountry()) ?? ""
-        default: self.place = "earth"
+        default: self.place = "Земля"
         }
     }
     

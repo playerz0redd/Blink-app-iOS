@@ -42,12 +42,18 @@ class FriendsViewModel : ObservableObject {
     }
     
     @MainActor func findPeopleByUsername(username: String) {
+        self.viewState = .loading
         Task {
-            if let people = try await model.findPeopleByUsername(username: username) {
-                self.peopleSearch = people
-            } else {
-                self.peopleSearch = []
+            do {
+                if let people = try await model.findPeopleByUsername(username: username) {
+                    self.peopleSearch = people
+                } else {
+                    self.peopleSearch = []
+                }
+            } catch let error as ApiError {
+                self.viewState = .error(error)
             }
+            self.viewState = .success
         }
     }
     

@@ -55,7 +55,7 @@ struct PersonSheet: View {
                                 if viewModel.userInfo?.status == .friend {
                                     actionButton(
                                         imagePath: "ellipsis.message.fill",
-                                        buttonText: "Messages") {
+                                        buttonText: "Сообщения") {
                                             viewModel.isShowingMessages.toggle()
                                         }
                                     
@@ -63,31 +63,31 @@ struct PersonSheet: View {
                                 
                                 switch viewModel.userInfo?.status {
                                 case .friend:
-                                    actionButton(imagePath: "delete.left.fill", buttonText: "Delete") {
+                                    actionButton(imagePath: "delete.left.fill", buttonText: "Удалить") {
                                         viewModel.changeStatus(status: .unknown)
                                         viewModel.userInfo?.status = .unknown
                                     }.transition(.opacity)
                                 case .request:
                                     HStack {
-                                        actionButton(imagePath: "plus.rectangle.fill", buttonText: "Add") {
+                                        actionButton(imagePath: "plus.rectangle.fill", buttonText: "Добавить") {
                                             viewModel.changeStatus(status: .friend)
                                             viewModel.userInfo?.status = .friend
                                         }.transition(.opacity)
                                         
-                                        actionButton(imagePath: "delete.left.fill", buttonText: "Delete") {
+                                        actionButton(imagePath: "delete.left.fill", buttonText: "Удалить запрос") {
                                             viewModel.changeStatus(status: .unknown)
                                             viewModel.userInfo?.status = .unknown
                                         }.transition(.opacity)
                                     }
                                 case .myRequest:
-                                    actionButton(imagePath: "delete.left.fill", buttonText: "Delete") {
+                                    actionButton(imagePath: "delete.left.fill", buttonText: "Отменить запрос") {
                                         viewModel.changeStatus(status: .unknown)
                                         viewModel.userInfo?.status = .unknown
                                     }.transition(.opacity)
                                 case .unknown:
-                                    actionButton(imagePath: "plus.rectangle.fill", buttonText: "Send request") {
+                                    actionButton(imagePath: "plus.rectangle.fill", buttonText: "Отправить запрос") {
                                         viewModel.changeStatus(status: .request)
-                                        viewModel.userInfo?.status = .request
+                                        viewModel.userInfo?.status = .myRequest
                                     }.transition(.opacity)
                                 default:
                                     EmptyView()
@@ -112,7 +112,7 @@ struct PersonSheet: View {
                             Text("\(viewModel.userInfo?.friendsSince!.getDistanceBetweenDates(to: Date.now) ?? 0) дней провели вместе 😉")
                                 .foregroundStyle(.gray)
                         } else {
-                            Text(viewModel.userInfo?.username != viewModel.myUsername ? "Not friends yet." : "That's you!")
+                            Text(viewModel.userInfo?.username != viewModel.myUsername ? "Все еще не друзья." : "Это Вы!")
                                 .padding(.top, 30)
                                 .foregroundStyle(.gray)
                         }

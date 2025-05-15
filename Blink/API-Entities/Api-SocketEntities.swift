@@ -20,12 +20,8 @@ class SocketMessage: Codable {
     
     let type: MessageType?
     
-    init(type: MessageType) {
+    init(type: MessageType? = nil) {
         self.type = type
-    }
-    
-    init() {
-        self.type = nil
     }
     
     required init(from decoder: any Decoder) throws {

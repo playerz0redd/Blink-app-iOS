@@ -31,6 +31,10 @@ class MapWorkModel: WebSocketDelegate, ObservableObject {
         }
     }
     
+    func getMapStyle() -> Any? {
+        storageService.getMapStyle()
+    }
+    
     init(networkManager: NetworkManager) {
         self.networkManager = networkManager
         self.networkManager.addDelegate(delegate: .init(delegate: self))

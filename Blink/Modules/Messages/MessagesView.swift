@@ -191,9 +191,10 @@ struct MessagesView: View {
     
     var messageTextField: some View {
         HStack {
-            TextField("", text: $viewModel.messageText, prompt: Text("Message")
+            TextField("", text: $viewModel.messageText, prompt: Text("Сообщение")
                 .foregroundStyle(Color.primary.opacity(0.5))
             )
+            .autocorrectionDisabled(true)
             .padding(.leading, 10)
             .background {
                 RoundedRectangle(cornerRadius: 17)

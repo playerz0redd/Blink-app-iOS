@@ -39,7 +39,7 @@ struct RequestView: View {
                 VStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("all requests ")
+                            Text("все запросы ")
                                 .bold()
                                 .font(.largeTitle)
                             +
@@ -59,6 +59,10 @@ struct RequestView: View {
                     )
                 }.transition(.opacity)
             }
+        }
+        .refreshable {
+            viewModel.friendStatus = .request
+            viewModel.getPeopleList()
         }
         .animation(.easeInOut(duration: 0.5), value: viewModel.viewState)
         .onAppear() {
