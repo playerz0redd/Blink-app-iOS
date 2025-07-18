@@ -46,19 +46,20 @@ Blink — это SwiftUI-приложение для iOS, позволяющее
 ## 🖥️ Скриншоты
 
 ### Главный экран
-![Главный экран](screenshots/main-view.jpg)
+<img src="screenshots/main-view.jpg" alt="Главный экран" width="300"/>
 
 ### Поиск людей
-![Поиск людей](screenshots/find-people.jpg)
+<img src="screenshots/find-people.jpg" alt="Поиск людей" width="300"/>
 
 ### Чаты
-![Чаты](screenshots/chats.jpg)
+<img src="screenshots/chats.jpg" alt="Чаты" width="300"/>
 
 ### Сообщения
-![Сообщения](screenshots/messages.jpg)
+<img src="screenshots/messages.jpg" alt="Сообщения" width="300"/>
 
 ### Настройки
-![Настройки](screenshots/settings.jpg)
+<img src="screenshots/settings.jpg" alt="Настройки" width="300"/>
+
 
 
 
